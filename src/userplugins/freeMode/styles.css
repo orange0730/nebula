@@ -412,6 +412,117 @@
     margin: auto;
 }
 
+.nebula-wsmenu-root {
+    position: absolute;
+    top: 54px;
+    left: 50%;
+    transform: translateX(220px);
+    width: 240px;
+    max-height: 360px;
+    display: flex;
+    flex-direction: column;
+    background: var(--nebula-card-bg);
+    border: 1px solid var(--nebula-card-border);
+    border-radius: 14px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    gap: 8px;
+    z-index: 10;
+}
+
+.nebula-wsmenu-save-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.nebula-wsmenu-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: #ece9ff;
+    font-size: 13px;
+    padding: 7px 10px;
+}
+
+.nebula-wsmenu-input:focus {
+    outline: none;
+    border-color: var(--nebula-accent-soft);
+}
+
+.nebula-wsmenu-save-btn {
+    background: rgba(143, 123, 255, 0.18);
+    border: 1px solid var(--nebula-accent-soft);
+    color: #d9d4ff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.nebula-wsmenu-save-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.nebula-wsmenu-save-btn:not(:disabled):hover {
+    background: rgba(143, 123, 255, 0.32);
+}
+
+.nebula-wsmenu-list {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 6px;
+}
+
+.nebula-wsmenu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 8px;
+    padding: 6px 8px;
+}
+
+.nebula-wsmenu-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.nebula-wsmenu-item-name {
+    flex: 1;
+    color: #ece9ff;
+    font-size: 13px;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nebula-wsmenu-delete-btn {
+    background: transparent;
+    border: none;
+    color: #8f88b8;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 4px;
+}
+
+.nebula-wsmenu-delete-btn:hover {
+    color: #ff6b6b;
+}
+
+.nebula-wsmenu-empty {
+    color: #8f88b8;
+    font-size: 12px;
+    text-align: center;
+    padding: 8px;
+}
+
 .nebula-overlay-hint {
     position: absolute;
     top: 50%;
