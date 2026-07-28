@@ -1,7 +1,7 @@
 import { classNameFactory } from "@utils/css";
 import { useEffect, useState } from "@webpack/common";
 
-import { closeFreeMode, cycleFocus, freeModeStore, useExternalStore } from "../state";
+import { closeFreeMode, closeWindow, cycleFocus, freeModeStore, useExternalStore } from "../state";
 import { ChannelPicker } from "./ChannelPicker";
 import { Window } from "./Window";
 import { WorkspaceMenu } from "./WorkspaceMenu";
@@ -27,6 +27,14 @@ export function FreeModeOverlay() {
                 if (pickerOpen) setPickerOpen(false);
                 else if (wsMenuOpen) setWsMenuOpen(false);
                 else if (!isTyping) closeFreeMode();
+            } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "n") {
+                e.preventDefault();
+                setWsMenuOpen(false);
+                setPickerOpen(v => !v);
+            } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "w" && !isTyping) {
+                e.preventDefault();
+                const focused = freeModeStore.get().focusedId;
+                if (focused) closeWindow(focused);
             }
         };
 
@@ -51,7 +59,7 @@ export function FreeModeOverlay() {
                 >
                     版面
                 </button>
-                <span style={{ color: "#8f88b8", fontSize: 12 }}>Tab 切換視窗・Esc 關閉</span>
+                <span style={{ color: "#8f88b8", fontSize: 12 }}>Tab 切換視窗・Ctrl+N 新增・Ctrl+W 關閉目前視窗・Esc 離開</span>
                 <button className="nebula-toolbar-close" onClick={closeFreeMode} title="離開自由模式">
                     &times;
                 </button>
