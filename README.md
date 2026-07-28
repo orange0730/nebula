@@ -1,3 +1,12 @@
+# Nebula
+
+This is [orange0730](https://github.com/orange0730)'s personal fork of Vencord, adding custom plugins:
+dynamic live backgrounds (**LiveTheme**) and a freeform floating-window multi-channel layer (**Free Mode**,
+in progress). See **[NEBULA.md](NEBULA.md)** for details on what's added here. Everything below this point
+is upstream Vencord's own documentation.
+
+---
+
 # Vencord
 
 ![](https://img.shields.io/github/package-json/v/Vendicated/Vencord?style=for-the-badge&logo=github&logoColor=d3869b&label=&color=1d2021&labelColor=282828)
