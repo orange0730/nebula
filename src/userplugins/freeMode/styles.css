@@ -1,0 +1,532 @@
+:root {
+    --nebula-accent: #8f7bff;
+    --nebula-accent-soft: rgba(143, 123, 255, 0.35);
+    --nebula-bg: rgba(8, 6, 16, 0.55);
+    --nebula-card-bg: rgba(18, 15, 28, 0.72);
+    --nebula-card-border: rgba(255, 255, 255, 0.08);
+    --nebula-radius-window: 18px;
+    --nebula-radius-pill: 999px;
+    --nebula-blur-window: 18px;
+    --nebula-blur-widget: 28px;
+}
+
+.nebula-entry-button {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 2147483000;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--nebula-radius-pill);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--nebula-card-bg);
+    border: 1px solid var(--nebula-card-border);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+    color: #e6e1ff;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    -webkit-app-region: no-drag;
+}
+
+.nebula-entry-button:hover {
+    transform: scale(1.08);
+    background: rgba(143, 123, 255, 0.22);
+    box-shadow: 0 0 0 4px var(--nebula-accent-soft), 0 2px 14px rgba(0, 0, 0, 0.4);
+}
+
+.nebula-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2147482900;
+    background: var(--nebula-bg);
+    backdrop-filter: blur(6px);
+    overflow: hidden;
+    -webkit-app-region: no-drag;
+}
+
+.nebula-overlay-toolbar {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: var(--nebula-radius-pill);
+    background: var(--nebula-card-bg);
+    border: 1px solid var(--nebula-card-border);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    z-index: 5;
+}
+
+.nebula-toolbar-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: var(--nebula-radius-pill);
+    background: transparent;
+    color: #d9d4ff;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+}
+
+.nebula-toolbar-btn:hover {
+    background: var(--nebula-accent-soft);
+    color: #fff;
+}
+
+.nebula-toolbar-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    color: #cfc9f5;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.nebula-toolbar-close:hover {
+    background: rgba(255, 90, 90, 0.35);
+    color: #fff;
+}
+
+.nebula-window {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--nebula-radius-window);
+    background: var(--nebula-card-bg);
+    border: 1px solid var(--nebula-card-border);
+    backdrop-filter: blur(var(--nebula-blur-window));
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    color: #ece9ff;
+}
+
+.nebula-window.nebula-focused {
+    border-color: var(--nebula-accent-soft);
+    box-shadow: 0 0 0 2px var(--nebula-accent-soft), 0 8px 36px rgba(0, 0, 0, 0.5);
+}
+
+.nebula-window.nebula-activity:not(.nebula-focused) {
+    box-shadow: 0 0 0 2px rgba(143, 123, 255, 0.55), 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.nebula-window-titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px 8px 14px;
+    cursor: grab;
+    user-select: none;
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nebula-window-titlebar:active {
+    cursor: grabbing;
+}
+
+.nebula-window-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e4e0ff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nebula-window-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.nebula-window-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: none;
+    color: #cfc9f5;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.15s ease;
+}
+
+.nebula-window-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.nebula-window-btn.nebula-close:hover {
+    background: rgba(255, 90, 90, 0.55);
+    color: #fff;
+}
+
+.nebula-window-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.nebula-resize-handle {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    width: 16px;
+    height: 16px;
+    cursor: nwse-resize;
+    opacity: 0.5;
+}
+
+.nebula-resize-handle::after {
+    content: "";
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--nebula-accent);
+    border-bottom: 2px solid var(--nebula-accent);
+    border-radius: 0 0 2px 0;
+}
+
+.nebula-chat-root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+.nebula-chat-scroller {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nebula-chat-scroller::-webkit-scrollbar {
+    width: 6px;
+}
+
+.nebula-chat-scroller::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 3px;
+}
+
+.nebula-chat-empty {
+    color: #8f88b8;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.nebula-chat-message {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.nebula-chat-avatar {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.nebula-chat-message-body {
+    min-width: 0;
+    flex: 1;
+}
+
+.nebula-chat-message-header {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.nebula-chat-author {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e4e0ff;
+}
+
+.nebula-chat-timestamp {
+    font-size: 10px;
+    color: #74708f;
+}
+
+.nebula-chat-content {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #d6d2f0;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+.nebula-chat-composer {
+    flex-shrink: 0;
+    padding: 8px 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nebula-chat-input {
+    width: 100%;
+    resize: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: #ece9ff;
+    font-size: 13px;
+    padding: 8px 10px;
+    font-family: inherit;
+    max-height: 90px;
+}
+
+.nebula-chat-input:focus {
+    outline: none;
+    border-color: var(--nebula-accent-soft);
+}
+
+.nebula-clock-root {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.nebula-clock-time {
+    font-family: "Consolas", "SF Mono", monospace;
+    font-size: 40px;
+    font-weight: 700;
+    color: #f1eeff;
+    letter-spacing: 1px;
+}
+
+.nebula-clock-date {
+    font-size: 13px;
+    color: #a8a2d6;
+}
+
+.nebula-weather-root {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.nebula-weather-temp {
+    font-size: 44px;
+    font-weight: 700;
+    color: #f1eeff;
+}
+
+.nebula-weather-desc {
+    font-size: 13px;
+    color: #a8a2d6;
+}
+
+.nebula-weather-status {
+    font-size: 13px;
+    color: #8f88b8;
+}
+
+.nebula-voice-root {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    gap: 10px;
+    min-height: 0;
+}
+
+.nebula-voice-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #d9d4ff;
+}
+
+.nebula-voice-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    overflow-y: auto;
+}
+
+.nebula-voice-participant {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 58px;
+}
+
+.nebula-voice-avatar-ring {
+    border-radius: 50%;
+    padding: 2px;
+    border: 2px solid transparent;
+    transition: border-color 0.1s ease;
+}
+
+.nebula-voice-avatar-ring.nebula-voice-speaking {
+    border-color: #3ba55d;
+    box-shadow: 0 0 8px rgba(59, 165, 93, 0.55);
+}
+
+.nebula-voice-name {
+    font-size: 11px;
+    color: #c9c4ee;
+    max-width: 58px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.nebula-voice-empty {
+    color: #8f88b8;
+    font-size: 12px;
+    margin: auto;
+}
+
+.nebula-overlay-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #6c6690;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.nebula-picker-root {
+    position: absolute;
+    top: 54px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    max-height: 420px;
+    display: flex;
+    flex-direction: column;
+    background: var(--nebula-card-bg);
+    border: 1px solid var(--nebula-card-border);
+    border-radius: 14px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    gap: 8px;
+    z-index: 10;
+}
+
+.nebula-picker-search {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: #ece9ff;
+    font-size: 13px;
+    padding: 8px 10px;
+}
+
+.nebula-picker-search:focus {
+    outline: none;
+    border-color: var(--nebula-accent-soft);
+}
+
+.nebula-picker-widget-row {
+    display: flex;
+    gap: 6px;
+}
+
+.nebula-picker-widget-btn {
+    flex: 1;
+    background: rgba(143, 123, 255, 0.14);
+    border: 1px solid var(--nebula-accent-soft);
+    color: #d9d4ff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.nebula-picker-widget-btn:hover {
+    background: rgba(143, 123, 255, 0.3);
+}
+
+.nebula-picker-list {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.nebula-picker-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.nebula-picker-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.nebula-picker-item-name {
+    color: #ece9ff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nebula-picker-item-guild {
+    color: #8f88b8;
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.nebula-picker-item-empty {
+    color: #8f88b8;
+    font-size: 12px;
+    text-align: center;
+    padding: 12px;
+}
+
+.nebula-empty-placeholder {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8f88b8;
+    font-size: 13px;
+    text-align: center;
+    padding: 20px;
+}
