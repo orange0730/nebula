@@ -1,5 +1,5 @@
-name: Bug/Crash Report
-description: Create a bug or crash report for Vencord.
+name: 錯誤回報 Bug Report
+description: 回報 Nebula 外掛(LiveTheme / Free Mode)的錯誤或當機
 labels: [bug]
 title: "[Bug] <title>"
 
@@ -7,68 +7,65 @@ body:
     - type: markdown
       attributes:
           value: |
-              GitHub Issues are for development, not support!
+              回報前請先確認:這是 Nebula 自己外掛(LiveTheme、Free Mode)的問題,而不是 Discord 本身
+              或上游 Vencord 核心功能的問題。如果是 Vencord 核心/其他內建外掛的問題,請到
+              [Vencord 官方 repo](https://github.com/Vendicated/Vencord/issues) 回報。
 
-              Some plugins may sometimes break, but we have automatic tracking for that. So please **do not report broken plugins**, it is useless.
-              However, if a plugin works fine, but has a bug in its functionality, then you can report that here.
-
-              If you are experiencing any of the following issues, go to our [Discord server](https://discord.gg/D9uwnFnqmd) for support:
-              - Vencord doesn't work or crashes
-              - A plugin doesn't work anymore
-              - You are having issues installing Vencord
-              - You want to ask a question about Vencord or one of its plugins
-
-    - type: textarea
-      id: bug-description
+    - type: dropdown
+      id: plugin
       attributes:
-          label: What happens when the bug or crash occurs?
-          description: Where does this bug or crash occur, when does it occur, etc.
-          placeholder: The bug/crash happens sometimes when I do ..., causing this to not work/the app to crash. I think it happens because of ...
+          label: 哪個外掛出問題?
+          options:
+              - LiveTheme
+              - Free Mode(自由模式)
+              - 兩個都有 / 不確定
       validations:
           required: true
 
     - type: textarea
-      id: expected-behaviour
+      id: bug-description
       attributes:
-          label: What is the expected behaviour?
-          description: Simply detail what the expected behaviour is.
-          placeholder: I expect Vencord/Discord to open the ... page instead of ..., it prevents me from doing ...
+          label: 發生什麼問題?
+          description: 描述問題發生的情境、時機
+          placeholder: 在...情況下,發生...,導致...無法正常運作
       validations:
           required: true
 
     - type: textarea
       id: steps-to-take
       attributes:
-          label: How do you recreate this bug or crash?
-          description: Give us a list of steps in order to recreate the bug or crash.
+          label: 重現步驟
           placeholder: |
-              1. Do ...
-              2. Then ...
-              3. Do this ..., ... and then ...
-              4. Observe "the bug" or "the crash"
+              1. 做...
+              2. 接著...
+              3. 觀察到「錯誤/當機」
       validations:
           required: true
 
     - type: textarea
       id: crash-log
       attributes:
-          label: Errors
-          description: Open the Developer Console with `Ctrl+Shift+i` / `Cmd+Option+i`. Then look for any red errors (Ignore network errors like Failed to load resource) and paste them between the "```".
+          label: 錯誤訊息
+          description: 按 `Ctrl+Shift+I` 打開開發者主控台,找到紅色錯誤訊息貼在下面(可略過網路錯誤)
           value: |
               ```
-              Replace this text with your crash-log.
+              在這裡貼上錯誤訊息
               ```
       validations:
           required: false
 
+    - type: input
+      id: discord-version
+      attributes:
+          label: Discord 版本
+          placeholder: 例如 Stable 1.0.151
+      validations:
+          required: true
+
     - type: checkboxes
       id: agreement-check
       attributes:
-          label: Request Agreement
-          description: We only accept reports for bugs that happen on Discord Stable. Canary and PTB are Development branches and may be unstable
+          label: 確認事項
           options:
-              - label: I've searched existing issues and this hasn't been reported before
-              - label: I am using Discord Stable or tried on Stable and this bug happens there as well
-              - label: I installed Vencord via an official method (download from vencord.dev or from source), not via something like AUR or Nix packages
-              - label: This is not a support request
-              - label: I am willing to submit a fix for this myself
+              - label: 我已經搜尋過現有 Issue,沒有重複回報
+              - label: 這是 Nebula 自己外掛(LiveTheme/Free Mode)的問題,不是 Vencord 核心或其他內建外掛的問題

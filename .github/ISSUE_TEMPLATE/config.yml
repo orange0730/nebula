@@ -1,11 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: 💬 Discord Community
-    url: https://discord.gg/D9uwnFnqmd
-    about: For plugin requests, support questions, and general help - join our Discord server
-  - name: 🔌 Plugin Requests
-    url: https://discord.gg/D9uwnFnqmd
-    about: Want a new plugin? Request it in our Discord community, not here
-  - name: ❓ Support & Questions
-    url: https://discord.gg/D9uwnFnqmd
-    about: Need help? Ask in our Discord server for faster responses
+  - name: 💬 一般討論 / 提問
+    url: https://github.com/orange0730/nebula/discussions
+    about: 使用上的問題、想法交流,請到 Discussions,不要開 Issue
+  - name: 🧩 Vencord 核心 / 其他內建外掛問題
+    url: https://github.com/Vendicated/Vencord/issues
+    about: 跟 LiveTheme、Free Mode 無關的 Vencord 核心問題,請到官方 repo 回報

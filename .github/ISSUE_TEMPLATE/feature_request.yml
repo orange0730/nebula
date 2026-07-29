@@ -1,5 +1,5 @@
-name: Feature Request
-description: Have an idea for a new feature? Request it here! No plugin requests, go to our Discord server for that
+name: 功能建議 Feature Request
+description: 對 LiveTheme 或 Free Mode 有新功能的想法?歡迎提出
 labels: [enhancement]
 title: "[Feature] <title>"
 
@@ -7,39 +7,47 @@ body:
     - type: markdown
       attributes:
           value: |
-            This form is not for any of the following:
-            - Plugin requests — Go to our [Discord server](https://discord.gg/D9uwnFnqmd) for that
-            - Feature requests for plugins — Go to our [Discord server](https://discord.gg/D9uwnFnqmd) for that
+            提出想法前歡迎先看看 [README](../../README.md) 裡列出的「尚未實作項目」,說不定已經在規劃中。
+
+    - type: dropdown
+      id: plugin
+      attributes:
+          label: 這個建議跟哪個外掛有關?
+          options:
+              - LiveTheme
+              - Free Mode(自由模式)
+              - 新外掛提案
+              - 其他 / 整體專案
+      validations:
+          required: true
 
     - type: textarea
       id: feature-description
       attributes:
-          label: A clear and concise description of the feature you'd like to see
+          label: 清楚描述你想要的功能
       validations:
           required: true
 
     - type: textarea
       id: implementation-notes
       attributes:
-          label: Implementation Notes
-          description: If you have ideas about how this could be implemented technically, share them here
+          label: 實作想法
+          description: 如果對技術實作方式有想法,歡迎在這裡分享
       validations:
           required: false
 
     - type: textarea
       id: additional-context
       attributes:
-          label: Additional context
-          description: Screenshots, mockups, examples from other apps, etc.
+          label: 補充資料
+          description: 截圖、示意圖、其他 App 的類似功能參考等
       validations:
           required: false
 
     - type: checkboxes
       id: agreement-check
       attributes:
-          label: Request Agreement
+          label: 確認事項
           options:
-            - label: I've searched existing issues and this hasn't been suggested before
-            - label: This is a **core modification feature**, not a plugin request (those go in Discord)
-            - label: This feature would benefit most users, not just a specific use case
-            - label: I am willing to work on this myself
+            - label: 我已經搜尋過現有 Issue,沒有重複提出
+            - label: 我願意自己動手實作(可選,但有幫助)

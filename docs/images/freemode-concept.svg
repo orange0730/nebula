@@ -1,0 +1,75 @@
+<svg viewBox="0 0 800 480" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0a14"/>
+      <stop offset="50%" stop-color="#170f2e"/>
+      <stop offset="100%" stop-color="#0b0a14"/>
+    </linearGradient>
+    <radialGradient id="glow3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8f7bff" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#8f7bff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="800" height="480" rx="18" fill="url(#bg2)"/>
+  <circle cx="400" cy="200" r="260" fill="url(#glow3)"/>
+
+  <!-- toolbar pill -->
+  <rect x="300" y="18" width="200" height="34" rx="17" fill="#12101f" fill-opacity="0.9" stroke="#ffffff" stroke-opacity="0.08"/>
+  <circle cx="322" cy="35" r="4" fill="#8f7bff"/>
+  <text x="336" y="39" font-family="sans-serif" font-size="12" fill="#d9d4ff">自由模式</text>
+  <text x="430" y="39" font-family="sans-serif" font-size="10" fill="#8f88b8">Tab 切換視窗</text>
+
+  <!-- window 1: chat -->
+  <g filter="url(#soft)">
+    <rect x="70" y="90" width="270" height="240" rx="16" fill="#12101f" fill-opacity="0.85" stroke="#8f7bff" stroke-opacity="0.35"/>
+    <rect x="70" y="90" width="270" height="30" rx="16" fill="#ffffff" fill-opacity="0.04"/>
+    <text x="86" y="110" font-family="sans-serif" font-size="12" fill="#e4e0ff"># 頻道聊天</text>
+    <g fill="#ffffff" fill-opacity="0.18">
+      <circle cx="92" cy="150" r="10"/>
+      <rect x="110" y="145" width="120" height="8" rx="4"/>
+      <circle cx="92" cy="180" r="10"/>
+      <rect x="110" y="175" width="160" height="8" rx="4"/>
+      <rect x="110" y="190" width="90" height="8" rx="4"/>
+      <circle cx="92" cy="220" r="10"/>
+      <rect x="110" y="215" width="140" height="8" rx="4"/>
+    </g>
+    <rect x="86" y="295" width="238" height="20" rx="10" fill="#ffffff" fill-opacity="0.06"/>
+  </g>
+
+  <!-- window 2: voice room -->
+  <g filter="url(#soft)">
+    <rect x="360" y="70" width="220" height="150" rx="16" fill="#12101f" fill-opacity="0.9" stroke="#8f7bff" stroke-opacity="0.35"/>
+    <rect x="360" y="70" width="220" height="28" rx="16" fill="#ffffff" fill-opacity="0.04"/>
+    <text x="376" y="89" font-family="sans-serif" font-size="12" fill="#e4e0ff">語音室</text>
+    <circle cx="400" cy="150" r="18" fill="none" stroke="#3ba55d" stroke-width="3"/>
+    <circle cx="400" cy="150" r="12" fill="#ffffff" fill-opacity="0.25"/>
+    <circle cx="460" cy="150" r="18" fill="none" stroke="#ffffff" stroke-opacity="0.15" stroke-width="3"/>
+    <circle cx="460" cy="150" r="12" fill="#ffffff" fill-opacity="0.2"/>
+    <circle cx="520" cy="150" r="18" fill="none" stroke="#ffffff" stroke-opacity="0.15" stroke-width="3"/>
+    <circle cx="520" cy="150" r="12" fill="#ffffff" fill-opacity="0.2"/>
+  </g>
+
+  <!-- window 3: clock -->
+  <g filter="url(#soft)">
+    <rect x="430" y="250" width="200" height="140" rx="16" fill="#12101f" fill-opacity="0.9" stroke="#8f7bff" stroke-opacity="0.35"/>
+    <rect x="430" y="250" width="200" height="28" rx="16" fill="#ffffff" fill-opacity="0.04"/>
+    <text x="446" y="269" font-family="sans-serif" font-size="12" fill="#e4e0ff">時鐘</text>
+    <text x="530" y="335" font-family="monospace" font-size="30" font-weight="bold" fill="#f1eeff" text-anchor="middle">21:15</text>
+  </g>
+
+  <!-- window 4: weather, partially behind -->
+  <g filter="url(#soft)" opacity="0.85">
+    <rect x="620" y="200" width="150" height="120" rx="16" fill="#12101f" fill-opacity="0.85" stroke="#8f7bff" stroke-opacity="0.3"/>
+    <rect x="620" y="200" width="150" height="26" rx="16" fill="#ffffff" fill-opacity="0.04"/>
+    <text x="634" y="217" font-family="sans-serif" font-size="11" fill="#e4e0ff">天氣</text>
+    <text x="695" y="275" font-family="sans-serif" font-size="24" font-weight="bold" fill="#f1eeff" text-anchor="middle">27°</text>
+  </g>
+
+  <text x="400" y="460" font-family="sans-serif" font-size="15" fill="#e6e1ff" fill-opacity="0.55" text-anchor="middle">
+    Free Mode 示意圖 — 多個頻道與小工具同時懸浮排列
+  </text>
+</svg>

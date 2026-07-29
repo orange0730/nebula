@@ -1,5 +1,12 @@
 # Nebula
 
+<p>
+  <a href="LICENSE"><img alt="License: GPL-3.0" src="https://img.shields.io/badge/license-GPL--3.0-8f7bff?style=flat-square"></a>
+  <a href="https://github.com/orange0730/nebula/issues"><img alt="Issues" src="https://img.shields.io/github/issues/orange0730/nebula?style=flat-square&color=8f7bff"></a>
+  <a href="https://github.com/orange0730/nebula/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-8f7bff?style=flat-square"></a>
+  <a href="https://github.com/Vendicated/Vencord"><img alt="Built on Vencord" src="https://img.shields.io/badge/built%20on-Vencord-2185D0?style=flat-square"></a>
+</p>
+
 **Language:** English · [繁體中文](README.md)
 
 Nebula is a Discord client mod built by [orange0730](https://github.com/orange0730) on top of
@@ -9,9 +16,16 @@ plugin system; Nebula adds the following custom plugins on top of it:
 - **LiveTheme** — dynamic/live background system
 - **Free Mode** — a freeform, draggable multi-window chat layout
 
+Issues and [pull requests](CONTRIBUTING.md) are welcome — help make this project better.
+
 ## Features
 
 ### LiveTheme: dynamic live backgrounds
+
+<img src="docs/images/livetheme-concept.svg" alt="LiveTheme concept: translucent panels showing an animated gradient through them" width="100%">
+
+> The image above is a concept illustration, not a real screenshot — feel free to open a PR or issue with your
+> own real-world screenshots!
 
 Brings Discord's background to life and makes the chat/sidebar panels translucent to show it through:
 
@@ -24,6 +38,8 @@ Brings Discord's background to life and makes the chat/sidebar panels translucen
   names.
 
 ### Free Mode
+
+<img src="docs/images/freemode-concept.svg" alt="Free Mode concept: several floating windows and widgets" width="100%">
 
 A small button in the top-left corner (or `Ctrl+\``) toggles "Free Mode" — a full-screen freeform overlay that
 turns Discord into a mini draggable-window desktop:
@@ -49,18 +65,44 @@ rounded pill-shaped widgets, soft single-accent-color glow.
 Known gaps not yet built: unread-badge suppression for channels open in a Free Mode window, per-window
 notification muting, snapping/tiling presets, multi-monitor window dragging.
 
-## Installation & development
+## Quick start
 
-Same workflow as upstream Vencord:
+Requirements: [Node.js](https://nodejs.org) 22+, [pnpm](https://pnpm.io), and Discord desktop already installed.
 
 ```bash
+# 1. Clone this repo
+git clone https://github.com/orange0730/nebula.git
+cd nebula
+
+# 2. Install dependencies
 pnpm install
+
+# 3. Build
 pnpm build
+
+# 4. Inject into your local Discord install
 pnpm inject
 ```
 
-For other details (finding your Discord install path, troubleshooting, etc.), see the
-[official Vencord docs](https://github.com/Vendicated/Vencord).
+`pnpm inject` opens an interactive picker — select your detected Discord install (or enter a custom path),
+then **restart Discord**. After that:
+
+1. Open Discord Settings → Vencord → Plugins, and enable both **LiveTheme** and **NebulaFreeMode**
+2. LiveTheme: click the gear icon next to the plugin to open its settings, pick a background mode, and adjust
+   opacity/blur
+3. Free Mode: back in the normal view, click the small square icon in the top-left corner (or press `Ctrl+\``)
+   to enter Free Mode, then click "Add Window" to pick a channel/DM or widget
+
+> ⚠️ If your Discord was installed via **snap**, its install directory is read-only and can't be injected into
+> directly. Use the official tar.gz/deb install instead (from [discord.com](https://discord.com/download)).
+
+For troubleshooting, manually specifying a Discord path, etc., see the
+[official Vencord docs](https://github.com/Vendicated/Vencord) (Nebula uses the same injection mechanism).
+
+## Contributing
+
+Contributions of any kind are welcome — bug reports, feature ideas, or PRs directly. See
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License & attribution
 
@@ -97,3 +139,9 @@ attribution disclosure.
 
 More info at [vencord.dev](https://vencord.dev) or the original project at
 [github.com/Vendicated/Vencord](https://github.com/Vendicated/Vencord).
+
+## Star History
+
+If this project is useful to you, consider giving it a ⭐️!
+
+[![Star History Chart](https://api.star-history.com/svg?repos=orange0730/nebula&type=Date)](https://star-history.com/#orange0730/nebula&Date)

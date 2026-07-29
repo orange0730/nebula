@@ -1,5 +1,12 @@
 # Nebula
 
+<p>
+  <a href="LICENSE"><img alt="License: GPL-3.0" src="https://img.shields.io/badge/license-GPL--3.0-8f7bff?style=flat-square"></a>
+  <a href="https://github.com/orange0730/nebula/issues"><img alt="Issues" src="https://img.shields.io/github/issues/orange0730/nebula?style=flat-square&color=8f7bff"></a>
+  <a href="https://github.com/orange0730/nebula/pulls"><img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-8f7bff?style=flat-square"></a>
+  <a href="https://github.com/Vendicated/Vencord"><img alt="Built on Vencord" src="https://img.shields.io/badge/built%20on-Vencord-2185D0?style=flat-square"></a>
+</p>
+
 **Language:** [English](README.en.md) · 繁體中文
 
 Nebula 是 [orange0730](https://github.com/orange0730) 基於 [Vencord](https://github.com/Vendicated/Vencord)
@@ -8,9 +15,16 @@ Nebula 是 [orange0730](https://github.com/orange0730) 基於 [Vencord](https://
 - **LiveTheme** — 動態/即時背景系統
 - **Free Mode(自由模式)** — 可自由拖放的多視窗聊天版面
 
+歡迎 [提出 Issue](https://github.com/orange0730/nebula/issues/new/choose)、送 [Pull Request](CONTRIBUTING.md),
+一起把這個專案做得更好。
+
 ## 功能
 
 ### LiveTheme:動態即時背景
+
+<img src="docs/images/livetheme-concept.svg" alt="LiveTheme 示意圖：面板透明，動態漸層背景透出" width="100%">
+
+> 上圖為示意圖,非真實螢幕截圖——歡迎透過 PR 或 Issue 附上你自己的實際使用截圖!
 
 讓 Discord 的背景動起來,並讓聊天室/側欄面板變透明,透出背景:
 
@@ -22,6 +36,8 @@ Nebula 是 [orange0730](https://github.com/orange0730) 基於 [Vencord](https://
   BetterDiscord 主題常見的「猜 class name」寫法更能撐過 Discord 版本更新。
 
 ### Free Mode:自由模式
+
+<img src="docs/images/freemode-concept.svg" alt="Free Mode 示意圖：多個懸浮視窗與小工具" width="100%">
 
 畫面左上角有一個小按鈕(或按 `Ctrl+\``)可以切換進入「自由模式」——一個全螢幕的自由版面疊層,
 把 Discord 變成一個可以自由排列視窗的迷你桌面:
@@ -45,18 +61,42 @@ Nebula 是 [orange0730](https://github.com/orange0730) 基於 [Vencord](https://
 尚未實作的已知項目:自由模式視窗開啟時抑制側欄未讀紅點、單一視窗通知靜音、視窗吸附/自動排列、
 多螢幕拖曳。
 
-## 安裝與開發
+## 快速開始
 
-跟 Vencord 原本的開發流程一樣:
+需求:[Node.js](https://nodejs.org) 22 以上、[pnpm](https://pnpm.io)、已安裝好的 Discord 桌面版。
 
 ```bash
+# 1. Clone 這個 repo
+git clone https://github.com/orange0730/nebula.git
+cd nebula
+
+# 2. 安裝相依套件
 pnpm install
+
+# 3. 建置
 pnpm build
+
+# 4. 注入到本機 Discord
 pnpm inject
 ```
 
-其他細節(如何找到 Discord 安裝路徑、疑難排解等)請參考
-[Vencord 官方文件](https://github.com/Vendicated/Vencord)。
+`pnpm inject` 執行後會跳出互動式選單,選擇偵測到的 Discord 安裝路徑(或手動輸入自訂路徑),
+完成後**重新啟動 Discord**。啟動後:
+
+1. 打開 Discord 設定 → Vencord → Plugins,分別啟用 **LiveTheme** 和 **NebulaFreeMode**
+2. LiveTheme:點插件旁齒輪圖示開啟設定面板,選擇背景模式並調整不透明度/模糊
+3. Free Mode:回到一般畫面,點左上角的小方塊圖示(或按 `Ctrl+\``)進入自由模式,
+   按「＋新增視窗」選擇頻道/私訊或小工具
+
+> ⚠️ 如果你的 Discord 是透過 **snap** 安裝的,它的安裝目錄是唯讀的,無法直接注入。
+> 需要改用官方 tar.gz/deb 安裝方式(從 [discord.com](https://discord.com/download) 下載)。
+
+疑難排解、如何手動指定 Discord 路徑等細節,請參考
+[Vencord 官方文件](https://github.com/Vendicated/Vencord)(Nebula 沿用 Vencord 的注入機制)。
+
+## 貢獻
+
+歡迎任何形式的貢獻——回報錯誤、提出功能建議、直接送 PR 都可以。詳見 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 授權與致謝
 
@@ -89,3 +129,9 @@ GPL-3.0 是一個 copyleft 授權,重點是:
 
 更多資訊請見 [vencord.dev](https://vencord.dev) 或原始專案
 [github.com/Vendicated/Vencord](https://github.com/Vendicated/Vencord)。
+
+## Star History
+
+如果這個專案對你有幫助,歡迎按個 ⭐️!
+
+[![Star History Chart](https://api.star-history.com/svg?repos=orange0730/nebula&type=Date)](https://star-history.com/#orange0730/nebula&Date)
