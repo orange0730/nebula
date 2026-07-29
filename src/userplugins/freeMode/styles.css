@@ -10,6 +10,19 @@
     --nebula-blur-widget: 28px;
 }
 
+.nebula-appearance-root {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.nebula-appearance-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
 .nebula-entry-button {
     position: fixed;
     top: 8px;

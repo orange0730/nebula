@@ -1,7 +1,5 @@
-import { definePluginSettings } from "@api/Settings";
-import { OptionType } from "@utils/types";
-
 import { freeModeStore, FreeWindow, WindowKind } from "./state";
+import { settings } from "./settings";
 
 export interface SavedWindow {
     kind: WindowKind;
@@ -18,19 +16,12 @@ export interface Workspace {
     windows: SavedWindow[];
 }
 
-export const workspaceSettings = definePluginSettings({
-    workspaces: {
-        type: OptionType.CUSTOM,
-        default: {} as Record<string, Workspace>
-    }
-});
-
 function toSaved(w: FreeWindow): SavedWindow {
     return { kind: w.kind, title: w.title, channelId: w.channelId, x: w.x, y: w.y, width: w.width, height: w.height };
 }
 
 export function listWorkspaceNames(): string[] {
-    return Object.keys(workspaceSettings.store.workspaces ?? {});
+    return Object.keys(settings.store.workspaces ?? {});
 }
 
 export function saveWorkspace(name: string) {
@@ -38,20 +29,20 @@ export function saveWorkspace(name: string) {
     if (!trimmed) return;
 
     const windows = freeModeStore.get().windows.filter(w => !w.minimized).map(toSaved);
-    workspaceSettings.store.workspaces = {
-        ...workspaceSettings.store.workspaces,
+    settings.store.workspaces = {
+        ...settings.store.workspaces,
         [trimmed]: { name: trimmed, windows }
     };
 }
 
 export function deleteWorkspace(name: string) {
-    const next = { ...workspaceSettings.store.workspaces };
+    const next = { ...settings.store.workspaces };
     delete next[name];
-    workspaceSettings.store.workspaces = next;
+    settings.store.workspaces = next;
 }
 
 export function loadWorkspace(name: string) {
-    const ws: Workspace | undefined = workspaceSettings.store.workspaces?.[name];
+    const ws: Workspace | undefined = settings.store.workspaces?.[name];
     if (!ws) return;
 
     freeModeStore.set(s => {
