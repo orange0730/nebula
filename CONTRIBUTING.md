@@ -1,65 +1,26 @@
-# Contributing to Vencord
+# 貢獻指南
 
-> [!NOTE]
-> **AI Usage Notice**
->
-> Your contribution must be majority human written! Some AI assistance like inline suggestions is acceptable, but "vibecoded" contributions are not welcome.
-> Also **do not** use AI to generate your pull request description, README.md or in communication. Ignoring this rule will lead to a permanent block.
+Nebula 是 [orange0730](https://github.com/orange0730) 的個人專案,主要由自己搭配 AI 協作開發與維護,
+目前沒有像 Vencord 那樣完整的社群貢獻流程。
 
-Vencord is a community project and welcomes any kind of contribution from anyone!
+如果你想回報問題或提出想法,歡迎直接開 [GitHub Issue](../../issues)。如果你想送 PR,也歡迎,但請注意:
 
-We have development documentation for new contributors, which can be found at <https://docs.vencord.dev>.
+- 這是個人專案,審查與回覆的速度可能不快
+- 大幅度的改動建議先開 Issue 討論方向,避免白工
+- 請說明改動的原因與測試方式
 
-All contributions should be made in accordance with our [Code of Conduct](./CODE_OF_CONDUCT.md).
+## 這個 repo 跟 Vencord 官方專案的關係
 
-## How to contribute
+Nebula 是基於 [Vencord](https://github.com/Vendicated/Vencord) 延伸的個人 fork,詳見
+[README.md](README.md) 的授權與致謝章節。如果你的想法比較適合回饋給 Vencord 官方(例如通用型外掛、
+核心框架改進),建議直接到 [Vencord 官方 repo](https://github.com/Vendicated/Vencord) 貢獻,那邊有
+完整的社群與文件(<https://docs.vencord.dev>)。這個 repo 主要專注在 Nebula 自己的
+LiveTheme、Free Mode 這些外掛。
 
-Contributions can be sent via pull requests. If you're new to Git, check [this guide](https://opensource.com/article/19/7/create-pull-request-github).
+## 開發環境
 
-Pull requests can be made either to the `main` or the `dev` branch. However, unless you're an advanced user, I recommend sticking to `main`.
-This is because the dev branch might contain unstable changes and be force pushed frequently, which could cause conflicts in your pull request.
-
-Before working on a major change, I highly recommend opening a feature request for it, making sure to check "I am willing to work on this myself",
-so we can discuss before you invest time. Alternatively, you can also do so in our Discord server's development
-channels. This saves you a lot of time in case your feature is considered too niche or rejected for any other reason.
-
-## Write a plugin
-
-Writing a plugin is the primary way to contribute.
-
-Before starting your plugin:
-- Consider if this plugin would be useful to a large portion of the userbase. We do not accept niche plugins
-- Check existing pull requests to see if someone is already working on a similar plugin
-- Familarise yourself with our plugin rules below to ensure your plugin is not banned
-
-### Plugin Rules
-
-- No simple slash command plugins like `/cat`. Instead, make a [user installable Discord bot](https://discord.com/developers/docs/change-log#userinstallable-apps-preview)
-- No simple text replace plugins like Let me Google that for you. The TextReplace plugin can do this
-- No raw DOM manipulation. Use proper patches and React
-- No FakeDeafen or FakeMute
-- No StereoMic
-- No plugins that simply hide or redesign ui elements. This can be done with CSS
-- No plugins that interact with specific Discord bots (official Discord apps like Youtube WatchTogether are okay)
-- No selfbots or API spam (animated status, message pruner, auto reply, nitro snipers, etc)
-- No untrusted third party APIs. Popular services like Google or GitHub are fine, but absolutely no self hosted ones
-- No plugins that require the user to enter their own API key
-- Do not introduce new dependencies unless absolutely necessary and warranted
-
-## Improve Vencord itself
-
-If you have any ideas on how to improve Vencord itself, or want to propose a new plugin API, feel free to open a feature request so we can discuss.
-
-Or if you notice any bugs or typos, feel free to fix them!
-
-## Contribute to our Documentation
-
-The source code of our documentation is available at <https://github.com/Vencord/Docs>
-
-If you see anything outdated, incorrect or lacking, please fix it!
-If you think a new page should be added, feel free to suggest it via an issue and we can discuss.
-
-## Help out users in our Discord community
-
-We have an open support channel in our [Discord community](https://vencord.dev/discord).
-Helping out users there is always appreciated! The more, the merrier.
+```bash
+pnpm install
+pnpm build
+pnpm inject
+```

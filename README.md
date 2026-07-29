@@ -1,5 +1,7 @@
 # Nebula
 
+**Language:** [English](README.en.md) · 繁體中文
+
 Nebula 是 [orange0730](https://github.com/orange0730) 基於 [Vencord](https://github.com/Vendicated/Vencord)
 延伸開發的 Discord 客戶端修改工具。Vencord 提供底層的注入框架與外掛系統,Nebula 在其上加入了以下自製外掛:
 

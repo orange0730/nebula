@@ -1,21 +1,21 @@
-# Code of Conduct
+# 行為準則
 
-Our community is welcoming to everyone, regardless of their characteristics.
+Nebula 是 [orange0730](https://github.com/orange0730) 的個人專案。如果你在 Issue 或 Pull Request
+中互動,請保持基本的尊重與善意:
 
-As such, we expect you to treat everyone with respect and contribute to an open and welcoming community.
+- 對他人友善、有同理心
+- 即使意見不同,也請尊重對方
+- 願意給予並接受建設性的意見
 
-DO
-- have empathy and be nice to others
-- be respectful of differing opinions, even if you disagree
-- give and accept constructive criticism
+請不要:
 
-DON'T
-- use offensive or derogatory language
-- troll or spam
-- personally attack or harass others
+- 使用攻擊性或貶低他人的言語
+- 洗版或發送垃圾訊息
+- 人身攻擊或騷擾他人
 
-Repetitive violations of these guidelines might get your access to the repository restricted.
+如果對某個 Issue 或 PR 的互動有疑慮,歡迎直接透過 GitHub Issue 反映。
 
-If you feel like a user is violating these guidelines or feel treated unfairly, please refrain from vigilantism
-and instead report the issue to a moderator! The best way is joining our [official Discord community](https://vencord.dev/discord)
-and opening a modmail ticket.
+---
+
+本專案基於 [Vencord](https://github.com/Vendicated/Vencord) 延伸開發,詳見 [README.md](README.md)
+的授權與致謝章節。
