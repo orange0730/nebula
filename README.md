@@ -65,6 +65,26 @@ rounded pill-shaped widgets, soft single-accent-color glow.
 Known gaps not yet built: unread-badge suppression for channels open in a Free Mode window, per-window
 notification muting, snapping/tiling presets, multi-monitor window dragging.
 
+### In-game overlay
+
+Pin any Free Mode window to a standalone, always-on-top overlay that floats above every other window on your
+screen — including fullscreen-borderless games, so you can keep an eye on chat or your voice room without
+alt-tabbing out.
+
+1. Open Free Mode and add a channel window or the voice-room widget as usual.
+2. Click the 📌 pin icon in that window's titlebar (next to minimize/close). The icon lights up purple once pinned.
+3. Press **`Ctrl+Shift+\``** anywhere — even outside Discord — to show or hide all pinned overlays at once.
+
+Each pinned window gets its own overlay, positioned and sized to match that window's live position in Free Mode
+(drag or resize the Free Mode window and the overlay follows), clamped to stay fully on-screen. A channel overlay
+shows the last 8 messages, read-only chat, plus an input box at the bottom — type and hit Enter to send without
+switching back to Discord. A voice-room overlay shows the current call's participants with a speaking indicator
+and mute/deafen status.
+
+This is a real OS-level window (not a DirectX/game-engine hook), so it only works over borderless-windowed or
+windowed games, not exclusive fullscreen — and it can't render inside third-party fullscreen capture surfaces the
+same way Discord's own overlay can't either.
+
 ## Quick start
 
 ### Option 1: one-line install (recommended, no Node.js required)
