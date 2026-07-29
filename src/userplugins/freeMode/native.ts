@@ -1,4 +1,4 @@
-import { BrowserWindow, globalShortcut, IpcMainInvokeEvent } from "electron";
+import { BrowserWindow, globalShortcut, IpcMainInvokeEvent, screen } from "electron";
 import overlayHtml from "file://overlay.html?minify&base64";
 
 const SHORTCUT = "Control+Shift+`";
@@ -26,12 +26,21 @@ function getMainWindow(): BrowserWindow | undefined {
 
 function positionWindow(win: BrowserWindow, item: OverlayItemMeta) {
     const mainBounds = getMainWindow()?.getBounds() ?? { x: 0, y: 0 };
-    win.setBounds({
-        x: Math.round(mainBounds.x + item.x),
-        y: Math.round(mainBounds.y + item.y),
-        width: Math.max(160, Math.round(item.width)),
-        height: Math.max(120, Math.round(item.height))
-    });
+    const work = screen.getPrimaryDisplay().workArea;
+
+    const width = Math.min(Math.max(160, Math.round(item.width)), work.width);
+    const height = Math.min(Math.max(120, Math.round(item.height)), work.height);
+
+    const x = Math.min(
+        Math.max(Math.round(mainBounds.x + item.x), work.x),
+        work.x + work.width - width
+    );
+    const y = Math.min(
+        Math.max(Math.round(mainBounds.y + item.y), work.y),
+        work.y + work.height - height
+    );
+
+    win.setBounds({ x, y, width, height });
 }
 
 function handleSend(itemId: string, text: string) {

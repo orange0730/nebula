@@ -12,6 +12,8 @@ const cl = classNameFactory("nebula-");
 
 const MIN_WIDTH = 240;
 const MIN_HEIGHT = 160;
+const MAX_WIDTH = 900;
+const MAX_HEIGHT = 760;
 
 interface Props {
     win: FreeWindow;
@@ -65,10 +67,13 @@ export function Window({ win, isFocused }: Props) {
         const origH = win.height;
         const el = ref.current;
 
+        const clampWidth = (w: number) => Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, w));
+        const clampHeight = (h: number) => Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, h));
+
         const onMove = (ev: PointerEvent) => {
             if (!el) return;
-            const nw = Math.max(MIN_WIDTH, origW + (ev.clientX - startX));
-            const nh = Math.max(MIN_HEIGHT, origH + (ev.clientY - startY));
+            const nw = clampWidth(origW + (ev.clientX - startX));
+            const nh = clampHeight(origH + (ev.clientY - startY));
             el.style.width = `${nw}px`;
             el.style.height = `${nh}px`;
         };
@@ -76,8 +81,8 @@ export function Window({ win, isFocused }: Props) {
             document.removeEventListener("pointermove", onMove);
             document.removeEventListener("pointerup", onUp);
             updateWindowRect(win.id, {
-                width: Math.max(MIN_WIDTH, origW + (ev.clientX - startX)),
-                height: Math.max(MIN_HEIGHT, origH + (ev.clientY - startY))
+                width: clampWidth(origW + (ev.clientX - startX)),
+                height: clampHeight(origH + (ev.clientY - startY))
             });
         };
         document.addEventListener("pointermove", onMove);
