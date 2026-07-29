@@ -5,6 +5,7 @@ import definePlugin from "@utils/types";
 
 import { EntryButton } from "./components/EntryButton";
 import { FreeModeOverlay } from "./components/FreeModeOverlay";
+import { startGlobalShortcut, stopGlobalShortcut } from "./globalShortcut";
 import { workspaceSettings } from "./workspaces";
 
 const ROOT_ID = "vc-nebula-freemode-root";
@@ -26,9 +27,12 @@ function mount() {
             <FreeModeOverlay />
         </>
     );
+
+    startGlobalShortcut();
 }
 
 function unmount() {
+    stopGlobalShortcut();
     root?.unmount();
     root = undefined;
     document.getElementById(ROOT_ID)?.remove();
