@@ -12,15 +12,27 @@
 $ErrorActionPreference = "Stop"
 
 $repo = "orange0730/nebula"
+
+# The Vencord installer's "dev install" mode patches Discord to load
+# patcher.js from this exact path at every Discord startup - it does NOT
+# copy the files into Discord's own directory. So this has to be somewhere
+# permanent, not a temp directory that gets deleted after this script exits
+# (Discord would fail to start with "Cannot find module ...\dist\patcher.js").
+$installDir = Join-Path $env:LOCALAPPDATA "nebula"
+$distDir = Join-Path $installDir "dist"
+
+# Only the installer binary download is temporary; safe to clean up.
 $tmp = Join-Path $env:TEMP ("nebula-install-" + [System.Guid]::NewGuid().ToString("N").Substring(0, 8))
 New-Item -ItemType Directory -Path $tmp -Force | Out-Null
 
 try {
-    Write-Host "==> Downloading latest Nebula build..."
+    Write-Host "==> Downloading latest Nebula build to $installDir ..."
     $distZip = Join-Path $tmp "nebula-dist.zip"
     Invoke-WebRequest -Uri "https://github.com/$repo/releases/download/latest/nebula-dist.zip" -OutFile $distZip
 
-    $distDir = Join-Path $tmp "nebula\dist"
+    if (Test-Path $distDir) {
+        Remove-Item -Path $distDir -Recurse -Force
+    }
     New-Item -ItemType Directory -Path $distDir -Force | Out-Null
     Expand-Archive -Path $distZip -DestinationPath $distDir -Force
 
@@ -30,9 +42,15 @@ try {
 
     Write-Host "==> Launching installer - pick your Discord install to patch Nebula into it."
 
-    $env:VENCORD_USER_DATA_DIR = Join-Path $tmp "nebula"
+    $env:VENCORD_USER_DATA_DIR = $installDir
     $env:VENCORD_DEV_INSTALL = "1"
     & $installerExe
+
+    Write-Host ""
+    Write-Host "==> Done! Restart Discord for the patch to take effect, then enable"
+    Write-Host "    LiveTheme and NebulaFreeMode under Settings -> Vencord -> Plugins."
+    Write-Host ""
+    Write-Host "    Re-running this script later will update Nebula to the latest build."
 }
 finally {
     Remove-Item -Path $tmp -Recurse -Force -ErrorAction SilentlyContinue
