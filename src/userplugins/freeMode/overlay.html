@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        font-family: "gg sans", "Helvetica Neue", sans-serif;
+        overflow: hidden;
+        -webkit-app-region: drag;
+        user-select: none;
+    }
+
+    #root {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px;
+        border-radius: 12px;
+        background: rgba(20, 16, 32, 0.72);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(160, 120, 255, 0.35);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+        min-width: 180px;
+    }
+
+    #title {
+        font-size: 12px;
+        font-weight: 600;
+        color: rgba(200, 170, 255, 0.9);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    #empty {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .participant {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-sizing: border-box;
+        border: 2px solid transparent;
+    }
+
+    .participant.speaking .avatar {
+        border-color: #6ee787;
+    }
+
+    .name {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+</style>
+</head>
+<body>
+<div id="root">
+    <div id="title">Nebula · Voice Room</div>
+    <div id="list"></div>
+</div>
+<script>
+    const list = document.getElementById("list");
+
+    window.__nebulaSetState = state => {
+        list.innerHTML = "";
+
+        if (!state || !state.participants || state.participants.length === 0) {
+            const empty = document.createElement("div");
+            empty.id = "empty";
+            empty.textContent = state && state.channelName ? "No one else here" : "Not in a voice channel";
+            list.appendChild(empty);
+            return;
+        }
+
+        for (const p of state.participants) {
+            const row = document.createElement("div");
+            row.className = "participant" + (p.speaking ? " speaking" : "");
+
+            const avatar = document.createElement("img");
+            avatar.className = "avatar";
+            avatar.src = p.avatarUrl || "";
+
+            const name = document.createElement("span");
+            name.className = "name";
+            name.textContent = p.username;
+
+            row.appendChild(avatar);
+            row.appendChild(name);
+            list.appendChild(row);
+        }
+    };
+</script>
+</body>
+</html>

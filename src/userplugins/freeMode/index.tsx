@@ -7,6 +7,7 @@ import { applyAppearance, teardownAppearance } from "./appearance";
 import { EntryButton } from "./components/EntryButton";
 import { FreeModeOverlay } from "./components/FreeModeOverlay";
 import { startGlobalShortcut, stopGlobalShortcut } from "./globalShortcut";
+import { startInGameOverlay, stopInGameOverlay } from "./inGameOverlay";
 import { settings } from "./settings";
 
 const ROOT_ID = "vc-nebula-freemode-root";
@@ -31,9 +32,11 @@ function mount() {
 
     applyAppearance();
     startGlobalShortcut();
+    startInGameOverlay();
 }
 
 function unmount() {
+    stopInGameOverlay();
     stopGlobalShortcut();
     teardownAppearance();
     root?.unmount();
