@@ -1,6 +1,6 @@
 import { findByPropsLazy } from "@webpack";
 import { PluginNative } from "@utils/types";
-import { SelectedChannelStore } from "@webpack/common";
+import { SelectedChannelStore, showToast, Toasts } from "@webpack/common";
 
 import {
     ensureMessagesLoaded,
@@ -101,7 +101,14 @@ function handleOverlaySend(itemId: string, text: string) {
 }
 
 export function startInGameOverlay() {
-    Native.registerShortcut();
+    Native.registerShortcut().then(result => {
+        if (result?.mode === "electron") {
+            showToast(
+                "找不到系統的全域快捷鍵支援，Ctrl+Shift+` 只能在 Discord 視窗有 focus 時觸發（常見於 GNOME + Wayland）。",
+                Toasts.Type.MESSAGE
+            );
+        }
+    });
 
     (window as any).__nebulaSendMessage = handleOverlaySend;
 

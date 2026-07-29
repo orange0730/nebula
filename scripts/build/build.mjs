@@ -53,7 +53,10 @@ const nodeCommonOpts = {
     platform: "node",
     target: ["esnext"],
     // @ts-expect-error this is never undefined
-    external: ["electron", "original-fs", "~pluginNatives", ...commonOpts.external]
+    // "x11" is an optional dep of dbus-next (used only for a legacy X11-based DBus address
+    // type we never hit via sessionBus()) - externalize it so esbuild doesn't fail trying to
+    // resolve a package that isn't installed.
+    external: ["electron", "original-fs", "~pluginNatives", "x11", ...commonOpts.external]
 };
 
 const sourceMapFooter = s => watch ? "" : `//# sourceMappingURL=vencord://${s}.js.map`;

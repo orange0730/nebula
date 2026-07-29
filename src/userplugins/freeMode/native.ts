@@ -1,6 +1,8 @@
 import { BrowserWindow, globalShortcut, IpcMainInvokeEvent, screen } from "electron";
 import overlayHtml from "file://overlay.html?minify&base64";
 
+import { tryRegisterPortalShortcut, unregisterPortalShortcut } from "./globalShortcutPortal";
+
 const SHORTCUT = "Control+Shift+`";
 const SEND_PREFIX = "NEBULA_SEND:";
 
@@ -15,8 +17,11 @@ interface OverlayItemMeta {
     height: number;
 }
 
+type ShortcutMode = "portal" | "electron" | null;
+
 const windows = new Map<string, BrowserWindow>();
-let registered = false;
+let electronRegistered = false;
+let shortcutMode: ShortcutMode = null;
 let visible = false;
 
 function getMainWindow(): BrowserWindow | undefined {
@@ -118,15 +123,29 @@ function toggleOverlay() {
     }
 }
 
-export function registerShortcut(_event: IpcMainInvokeEvent) {
-    if (registered) return;
-    registered = globalShortcut.register(SHORTCUT, toggleOverlay);
+export async function registerShortcut(_event: IpcMainInvokeEvent) {
+    if (shortcutMode) return { mode: shortcutMode };
+
+    const portalResult = await tryRegisterPortalShortcut(toggleOverlay);
+    if (portalResult.ok) {
+        shortcutMode = "portal";
+        return { mode: "portal" as const };
+    }
+
+    electronRegistered = globalShortcut.register(SHORTCUT, toggleOverlay);
+    shortcutMode = "electron";
+    return { mode: "electron" as const, portalFailureReason: portalResult.reason };
 }
 
-export function unregisterShortcut(_event: IpcMainInvokeEvent) {
-    if (!registered) return;
-    globalShortcut.unregister(SHORTCUT);
-    registered = false;
+export async function unregisterShortcut(_event: IpcMainInvokeEvent) {
+    if (shortcutMode === "portal") {
+        await unregisterPortalShortcut();
+    } else if (shortcutMode === "electron" && electronRegistered) {
+        globalShortcut.unregister(SHORTCUT);
+        electronRegistered = false;
+    }
+
+    shortcutMode = null;
     visible = false;
     for (const win of windows.values()) win.close();
     windows.clear();

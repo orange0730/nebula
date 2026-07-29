@@ -15,4 +15,5 @@ allowedDeprecatedVersions:
 strictPeerDependencies: false
 allowBuilds:
   esbuild: true
+  usocket: false
 pmOnFail: warn

@@ -38,6 +38,7 @@
         "@intrnl/xxhash64": "^0.1.2",
         "@vap/core": "0.0.12",
         "@vap/shiki": "0.10.5",
+        "dbus-next": "^0.10.2",
         "fflate": "^0.8.3",
         "gifenc": "github:mattdesl/gifenc#64842fca317b112a8590f8fef2bf3825da8f6fe3",
         "monaco-editor": "^0.55.1",
