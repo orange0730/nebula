@@ -1,6 +1,6 @@
 import { classNameFactory } from "@utils/css";
 import type { PointerEvent as ReactPointerEvent } from "react";
-import { useCallback, useRef } from "@webpack/common";
+import { showToast, Toasts, useCallback, useRef } from "@webpack/common";
 
 import { ClockWidget } from "../widgets/ClockWidget";
 import { WeatherWidget } from "../widgets/WeatherWidget";
@@ -14,6 +14,8 @@ const MIN_WIDTH = 240;
 const MIN_HEIGHT = 160;
 const MAX_WIDTH = 900;
 const MAX_HEIGHT = 760;
+
+let hasShownPinHint = false;
 
 interface Props {
     win: FreeWindow;
@@ -104,8 +106,20 @@ export function Window({ win, isFocused }: Props) {
                     {pinnable && (
                         <button
                             className={`${cl("window-btn")} ${pinned ? cl("pinned") : ""}`}
-                            onClick={() => pinned ? unpinFromOverlay(win.id) : pinToOverlay(win)}
+                            onClick={() => {
+                                if (pinned) {
+                                    unpinFromOverlay(win.id);
+                                } else {
+                                    pinToOverlay(win);
+                                    if (!hasShownPinHint) {
+                                        hasShownPinHint = true;
+                                        showToast("已釘選。遊戲中按 Ctrl+Shift+` 呼出 Overlay", Toasts.Type.SUCCESS);
+                                    }
+                                }
+                            }}
                             title={pinned ? "從遊戲內 Overlay 移除" : "加到遊戲內 Overlay"}
+                            aria-label={pinned ? "從遊戲內 Overlay 移除" : "加到遊戲內 Overlay"}
+                            aria-pressed={pinned}
                         >
                             <PinIcon />
                         </button>

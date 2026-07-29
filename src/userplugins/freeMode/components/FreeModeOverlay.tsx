@@ -59,7 +59,7 @@ export function FreeModeOverlay() {
                 >
                     版面
                 </button>
-                <span style={{ color: "#8f88b8", fontSize: 12 }}>Tab 切換視窗・Ctrl+N 新增・Ctrl+W 關閉目前視窗・Esc 離開</span>
+                <span style={{ color: "#8f88b8", fontSize: 12 }}>Tab 切換視窗・Ctrl+N 新增・Ctrl+W 關閉目前視窗・Esc 離開・📌 釘選到遊戲內 Overlay (Ctrl+Shift+`)</span>
                 <button className="nebula-toolbar-close" onClick={closeFreeMode} title="離開自由模式">
                     &times;
                 </button>

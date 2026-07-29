@@ -1,10 +1,14 @@
 import { BrowserWindow, globalShortcut, IpcMainInvokeEvent, screen } from "electron";
+import launcherHtml from "file://launcher.html?minify&base64";
 import overlayHtml from "file://overlay.html?minify&base64";
 
 import { tryRegisterPortalShortcut, unregisterPortalShortcut } from "./globalShortcutPortal";
 
 const SHORTCUT = "Control+Shift+`";
 const SEND_PREFIX = "NEBULA_SEND:";
+const LAUNCHER_PREFIX = "NEBULA_LAUNCHER:";
+
+const LAUNCHER_SIZE = { width: 292, height: 428 };
 
 type OverlayKind = "channel" | "voiceRoom";
 
@@ -24,9 +28,21 @@ let electronRegistered = false;
 let shortcutMode: ShortcutMode = null;
 let visible = false;
 
+let launcherWindow: BrowserWindow | null = null;
+let launcherPos: { x: number; y: number; } | null = null;
+
 function getMainWindow(): BrowserWindow | undefined {
-    const overlaySet = new Set(windows.values());
-    return BrowserWindow.getAllWindows().find(w => !overlaySet.has(w));
+    const ours = new Set<BrowserWindow>(windows.values());
+    if (launcherWindow) ours.add(launcherWindow);
+    return BrowserWindow.getAllWindows().find(w => !ours.has(w));
+}
+
+/**
+ * The console-message signature changed in Electron 37 (positional args deprecated in
+ * favour of a single event object), so read the message defensively either way.
+ */
+function readConsoleMessage(args: any[]): string {
+    return typeof args[2] === "string" ? args[2] : args[0]?.message ?? "";
 }
 
 function positionWindow(win: BrowserWindow, item: OverlayItemMeta) {
@@ -80,7 +96,8 @@ function createOverlayWindow(itemId: string) {
         win.webContents.executeJavaScript(`window.__nebulaItemId = ${JSON.stringify(itemId)}`).catch(() => {});
     });
 
-    win.webContents.on("console-message", (_event, _level, message) => {
+    win.webContents.on("console-message", (...args: any[]) => {
+        const message = readConsoleMessage(args);
         if (!message.startsWith(SEND_PREFIX)) return;
         try {
             const { itemId: fromItemId, text } = JSON.parse(message.slice(SEND_PREFIX.length));
@@ -93,7 +110,90 @@ function createOverlayWindow(itemId: string) {
     return win;
 }
 
+/* ------------------------------- launcher ball ------------------------------ */
+
+function defaultLauncherPos() {
+    const work = screen.getPrimaryDisplay().workArea;
+    return { x: work.x + 32, y: work.y + 32 };
+}
+
+function handleLauncherAction(payload: any) {
+    switch (payload?.action) {
+        case "hover":
+            // click-through by default; only capture the mouse while it's actually
+            // over the ball/panel so the rest of the (mostly transparent) window
+            // doesn't block clicks on the game underneath.
+            launcherWindow?.setIgnoreMouseEvents(!payload.inside, { forward: true });
+            break;
+        case "togglePin": {
+            const mainWin = getMainWindow();
+            mainWin?.webContents.executeJavaScript(
+                `window.__nebulaLauncherTogglePin && window.__nebulaLauncherTogglePin(${JSON.stringify(payload.itemId)})`
+            ).catch(() => {});
+            break;
+        }
+    }
+}
+
+function ensureLauncher() {
+    if (launcherWindow && !launcherWindow.isDestroyed()) return launcherWindow;
+
+    launcherPos ??= defaultLauncherPos();
+
+    const win = new BrowserWindow({
+        ...LAUNCHER_SIZE,
+        x: launcherPos.x,
+        y: launcherPos.y,
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true,
+        skipTaskbar: true,
+        resizable: false,
+        focusable: false,
+        show: false,
+        webPreferences: {
+            contextIsolation: true,
+            nodeIntegration: false,
+            sandbox: true
+        }
+    });
+
+    win.setAlwaysOnTop(true, "screen-saver");
+    win.setIgnoreMouseEvents(true, { forward: true });
+    win.loadURL(`data:text/html;base64,${launcherHtml}`);
+
+    win.webContents.on("console-message", (...args: any[]) => {
+        const message = readConsoleMessage(args);
+        if (!message.startsWith(LAUNCHER_PREFIX)) return;
+        try {
+            handleLauncherAction(JSON.parse(message.slice(LAUNCHER_PREFIX.length)));
+        } catch {
+            // ignore malformed bridge messages
+        }
+    });
+
+    win.on("moved", () => {
+        if (!win.isDestroyed()) launcherPos = win.getBounds();
+    });
+
+    win.on("closed", () => {
+        launcherWindow = null;
+    });
+
+    launcherWindow = win;
+    return win;
+}
+
+export function pushLauncherState(_event: IpcMainInvokeEvent, state: unknown) {
+    if (!launcherWindow || launcherWindow.isDestroyed() || !launcherWindow.isVisible()) return;
+    launcherWindow.webContents.executeJavaScript(
+        `window.__nebulaSetLauncherState && window.__nebulaSetLauncherState(${JSON.stringify(state)})`
+    ).catch(() => {});
+}
+
 export function syncOverlayItems(_event: IpcMainInvokeEvent, items: OverlayItemMeta[]) {
+    ensureLauncher();
+
     const nextIds = new Set(items.map(i => i.id));
 
     for (const [id, win] of windows) {
@@ -109,17 +209,35 @@ export function syncOverlayItems(_event: IpcMainInvokeEvent, items: OverlayItemM
             win = createOverlayWindow(item.id);
             windows.set(item.id, win);
             win.on("closed", () => windows.delete(item.id));
+            positionWindow(win, item);
             if (visible) win.show();
         }
-        positionWindow(win, item);
+        // deliberately not repositioning existing windows here - the user may have
+        // dragged the card somewhere sensible in-game, and snapping it back to the
+        // Free Mode window's position every sync tick reads as the feature being broken.
     }
 }
 
 function toggleOverlay() {
     visible = !visible;
+
     for (const win of windows.values()) {
         if (visible) win.show();
         else win.hide();
+    }
+
+    const launcher = visible ? ensureLauncher() : launcherWindow;
+    if (!launcher || launcher.isDestroyed()) return;
+
+    if (visible) {
+        launcher.setBounds({ ...launcherPos!, ...LAUNCHER_SIZE });
+        launcher.showInactive();
+        // don't wait for the next poll tick - the panel would sit blank for up to 1s
+        getMainWindow()?.webContents.executeJavaScript(
+            "window.__nebulaForceOverlaySync && window.__nebulaForceOverlaySync()"
+        ).catch(() => {});
+    } else {
+        launcher.hide();
     }
 }
 
@@ -149,6 +267,9 @@ export async function unregisterShortcut(_event: IpcMainInvokeEvent) {
     visible = false;
     for (const win of windows.values()) win.close();
     windows.clear();
+
+    launcherWindow?.close();
+    launcherWindow = null;
 }
 
 export function pushState(_event: IpcMainInvokeEvent, itemId: string, state: unknown) {

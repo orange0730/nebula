@@ -14,7 +14,7 @@ import {
     UserStore,
     VoiceStateStore
 } from "./discordApi";
-import { freeModeStore } from "./state";
+import { freeModeStore, pinToOverlay, unpinFromOverlay } from "./state";
 
 const ChannelRTCStore = findByPropsLazy("getSpeakingParticipants", "getParticipants");
 
@@ -84,6 +84,13 @@ function syncAndPush() {
 
     Native.syncOverlayItems(metas);
 
+    const pinnedIds = new Set(overlayItems.map(i => i.id));
+    Native.pushLauncherState({
+        windows: windows
+            .filter(w => w.kind === "channel" || w.kind === "voiceRoom")
+            .map(w => ({ id: w.id, kind: w.kind, title: w.title, pinned: pinnedIds.has(w.id) }))
+    });
+
     for (const item of overlayItems) {
         if (item.kind === "voiceRoom") {
             Native.pushState(item.id, buildVoicePayload());
@@ -100,6 +107,17 @@ function handleOverlaySend(itemId: string, text: string) {
     }
 }
 
+function handleLauncherTogglePin(itemId: string) {
+    const state = freeModeStore.get();
+    if (state.overlayItems.some(i => i.id === itemId)) {
+        unpinFromOverlay(itemId);
+        return;
+    }
+
+    const win = state.windows.find(w => w.id === itemId);
+    if (win) pinToOverlay(win);
+}
+
 export function startInGameOverlay() {
     Native.registerShortcut().then(result => {
         if (result?.mode === "electron") {
@@ -111,6 +129,8 @@ export function startInGameOverlay() {
     });
 
     (window as any).__nebulaSendMessage = handleOverlaySend;
+    (window as any).__nebulaLauncherTogglePin = handleLauncherTogglePin;
+    (window as any).__nebulaForceOverlaySync = syncAndPush;
 
     pollTimer = setInterval(syncAndPush, 1000);
     unsubscribeStore = freeModeStore.subscribe(syncAndPush);
@@ -125,6 +145,8 @@ export function stopInGameOverlay() {
     Native.unregisterShortcut();
 
     delete (window as any).__nebulaSendMessage;
+    delete (window as any).__nebulaLauncherTogglePin;
+    delete (window as any).__nebulaForceOverlaySync;
 
     clearInterval(pollTimer);
     pollTimer = undefined;

@@ -46,7 +46,7 @@ function unmount() {
 
 export default definePlugin({
     name: "NebulaFreeMode",
-    description: "自由模式：可自由拖放/縮放的多視窗聊天版面，支援多個頻道/私訊同時開啟，並可加入時鐘、天氣、語音室等小工具。",
+    description: "自由模式：可自由拖放/縮放的多視窗聊天版面，支援多個頻道/私訊同時開啟，並可加入時鐘、天氣、語音室等小工具。遊戲內 Overlay：在視窗標題列按 📌 釘選，遊戲中按 Ctrl+Shift+` 呼出。",
     authors: [{ name: "orange980730", id: 0n }],
     tags: ["Appearance", "Utility"],
     required: true,

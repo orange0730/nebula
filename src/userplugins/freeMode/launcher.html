@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: transparent;
+        font-family: "gg sans", "Helvetica Neue", sans-serif;
+        overflow: hidden;
+        user-select: none;
+    }
+
+    #ball {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+        -webkit-app-region: drag;
+        background: radial-gradient(circle at 32% 28%, #a892ff, #6b4fd8 62%, #3d2a8f);
+        border: 1px solid rgba(200, 170, 255, 0.55);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 18px rgba(143, 123, 255, 0.35);
+        transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    #ball:hover {
+        transform: scale(1.06);
+        box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55), 0 0 26px rgba(143, 123, 255, 0.6);
+    }
+
+    #ball svg {
+        width: 24px;
+        height: 24px;
+        fill: #ffffff;
+        opacity: 0.95;
+        pointer-events: none;
+    }
+
+    #panel {
+        position: absolute;
+        top: 64px;
+        left: 8px;
+        width: 276px;
+        height: 356px;
+        box-sizing: border-box;
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px;
+        border-radius: 12px;
+        -webkit-app-region: no-drag;
+        background: rgba(14, 11, 24, 0.92);
+        border: 1px solid rgba(160, 120, 255, 0.35);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+    }
+
+    #panel.open {
+        display: flex;
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        flex-shrink: 0;
+    }
+
+    .panel-title {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: rgba(200, 170, 255, 0.9);
+    }
+
+    .panel-hint {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.65);
+    }
+
+    #window-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        overflow-y: auto;
+        flex: 1;
+        min-height: 0;
+    }
+
+    #window-list::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    #window-list::-webkit-scrollbar-thumb {
+        background: rgba(160, 120, 255, 0.4);
+        border-radius: 2px;
+    }
+
+    .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 9px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        cursor: pointer;
+    }
+
+    .row:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .row-kind {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        fill: rgba(200, 170, 255, 0.9);
+    }
+
+    .row-title {
+        flex: 1;
+        min-width: 0;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.9);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .pin-btn {
+        flex-shrink: 0;
+        width: 26px;
+        height: 26px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.07);
+        color: rgba(255, 255, 255, 0.78);
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pin-btn.pinned {
+        background: rgba(143, 123, 255, 0.7);
+        color: #fff;
+    }
+
+    .pin-btn svg {
+        width: 12px;
+        height: 12px;
+        fill: currentColor;
+    }
+
+    .empty {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.6;
+    }
+</style>
+</head>
+<body>
+    <div id="ball">
+        <svg viewBox="0 0 24 24"><path d="M12 2.6l2.1 5.6 5.6 2.1-5.6 2.1L12 18l-2.1-5.6L4.3 10.3l5.6-2.1L12 2.6z"/></svg>
+    </div>
+
+    <div id="panel">
+        <div class="panel-header">
+            <span class="panel-title">Nebula · Free Mode</span>
+            <span class="panel-hint">點一下加入 / 移除</span>
+        </div>
+        <div id="window-list">
+            <div class="empty">還沒有釘選任何視窗。切回 Discord（Alt+Tab）→ 自由模式 → 視窗標題列的 📌</div>
+        </div>
+    </div>
+
+<script>
+    const ball = document.getElementById("ball");
+    const panel = document.getElementById("panel");
+    const list = document.getElementById("window-list");
+
+    const PIN_PATH = "M14.15 2.15a1 1 0 0 1 1.41 0l6.29 6.29a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 0 1-1.41 0l-.24-.24-3.3 3.3.68 3.06a1 1 0 0 1-.27.94l-.71.71a1 1 0 0 1-1.41 0l-3.18-3.18-4.6 4.6a1 1 0 0 1-1.41-1.41l4.6-4.6-3.18-3.18a1 1 0 0 1 0-1.41l.71-.71a1 1 0 0 1 .94-.27l3.06.68 3.3-3.3-.24-.24a1 1 0 0 1 0-1.41Z";
+    const CHAT_PATH = "M12 2a10 10 0 0 0-8.7 14.9L2 22l5.3-1.3A10 10 0 1 0 12 2Z";
+    const VOICE_PATH = "M12 15a3.5 3.5 0 0 0 3.5-3.5v-5a3.5 3.5 0 0 0-7 0v5A3.5 3.5 0 0 0 12 15Zm5.5-3.5A5.5 5.5 0 0 1 12 17a5.5 5.5 0 0 1-5.5-5.5H5a7 7 0 0 0 6 6.92V21h2v-2.58a7 7 0 0 0 6-6.92h-1.5Z";
+
+    function bridge(payload) {
+        console.log("NEBULA_LAUNCHER:" + JSON.stringify(payload));
+    }
+
+    // the launcher window is click-through by default (main process ignores mouse
+    // events except when forwarded); tell it when the cursor is over something so
+    // clicks land here instead of passing through to the game underneath.
+    for (const el of [ball, panel]) {
+        el.addEventListener("mouseenter", () => bridge({ action: "hover", inside: true }));
+        el.addEventListener("mouseleave", () => bridge({ action: "hover", inside: false }));
+    }
+
+    ball.addEventListener("click", () => panel.classList.toggle("open"));
+
+    /* --- state pushed from the Discord renderer --- */
+    window.__nebulaSetLauncherState = state => {
+        const windows = (state && state.windows) || [];
+
+        list.innerHTML = "";
+
+        if (windows.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "還沒有釘選任何視窗。切回 Discord（Alt+Tab）→ 自由模式 → 視窗標題列的 📌";
+            list.appendChild(empty);
+            return;
+        }
+
+        for (const w of windows) {
+            const row = document.createElement("div");
+            row.className = "row";
+            row.title = w.pinned ? "從 Overlay 移除" : "加到 Overlay";
+            row.addEventListener("click", () => bridge({ action: "togglePin", itemId: w.id }));
+
+            const kind = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            kind.setAttribute("viewBox", "0 0 24 24");
+            kind.setAttribute("class", "row-kind");
+            const kindPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            kindPath.setAttribute("d", w.kind === "voiceRoom" ? VOICE_PATH : CHAT_PATH);
+            kind.appendChild(kindPath);
+
+            const title = document.createElement("span");
+            title.className = "row-title";
+            title.textContent = w.title;
+
+            const btn = document.createElement("div");
+            btn.className = "pin-btn" + (w.pinned ? " pinned" : "");
+            btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="${PIN_PATH}"/></svg>`;
+
+            row.appendChild(kind);
+            row.appendChild(title);
+            row.appendChild(btn);
+            list.appendChild(row);
+        }
+    };
+</script>
+</body>
+</html>
