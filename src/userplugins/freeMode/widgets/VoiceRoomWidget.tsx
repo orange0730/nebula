@@ -19,7 +19,7 @@ export function VoiceRoomWidget() {
 
     const speakingIds: Set<string> = useStateFromStores(
         [ChannelRTCStore],
-        () => channelId ? new Set(ChannelRTCStore.getSpeakingParticipants(channelId).map((p: any) => p.userId ?? p.id)) : new Set(),
+        () => channelId ? new Set((ChannelRTCStore.getSpeakingParticipants(channelId) ?? []).map((p: any) => p.userId ?? p.id)) : new Set(),
         [channelId]
     );
 

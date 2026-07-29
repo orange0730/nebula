@@ -29,7 +29,7 @@ export interface PickableChannel {
 
 export function listGuildTextChannels(): PickableChannel[] {
     const out: PickableChannel[] = [];
-    for (const guild of Object.values(GuildStore.getGuilds() as Record<string, any>)) {
+    for (const guild of Object.values((GuildStore.getGuilds() ?? {}) as Record<string, any>)) {
         const channels = GuildChannelStore.getChannels(guild.id);
         for (const { channel } of channels?.SELECTABLE ?? []) {
             out.push({ id: channel.id, name: channel.name, guildId: guild.id, guildName: guild.name, isDM: false, isVoice: false });
@@ -40,7 +40,7 @@ export function listGuildTextChannels(): PickableChannel[] {
 
 export function listVoiceChannels(): PickableChannel[] {
     const out: PickableChannel[] = [];
-    for (const guild of Object.values(GuildStore.getGuilds() as Record<string, any>)) {
+    for (const guild of Object.values((GuildStore.getGuilds() ?? {}) as Record<string, any>)) {
         const channels = GuildChannelStore.getChannels(guild.id);
         for (const { channel } of channels?.VOCAL ?? []) {
             out.push({ id: channel.id, name: channel.name, guildId: guild.id, guildName: guild.name, isDM: false, isVoice: true });
@@ -50,7 +50,7 @@ export function listVoiceChannels(): PickableChannel[] {
 }
 
 export function listPrivateChannels(): PickableChannel[] {
-    return ChannelStore.getSortedPrivateChannels().map((channel: any) => ({
+    return (ChannelStore.getSortedPrivateChannels() ?? []).map((channel: any) => ({
         id: channel.id,
         name: channel.name || getRecipientNames(channel),
         isDM: true,
