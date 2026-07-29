@@ -49,4 +49,16 @@ echo "==> Launching installer — pick your Discord install to patch Nebula into
 echo "    (If your Discord was installed via snap, its directory is read-only;"
 echo "     install Discord from discord.com's official tar.gz/deb instead.)"
 
-VENCORD_USER_DATA_DIR="$TMP_DIR/nebula" VENCORD_DEV_INSTALL=1 "$INSTALLER_BIN"
+# When this script is run via `curl ... | bash`, this process's own stdin is
+# the pipe from curl, which is already exhausted by the time we get here.
+# The installer is interactive and needs real keyboard input, so we connect
+# it directly to the controlling terminal instead of inheriting our stdin.
+if [ -r /dev/tty ]; then
+    VENCORD_USER_DATA_DIR="$TMP_DIR/nebula" VENCORD_DEV_INSTALL=1 "$INSTALLER_BIN" < /dev/tty
+else
+    echo "No interactive terminal available (/dev/tty not readable)." >&2
+    echo "Download the script and run it directly instead of piping into bash:" >&2
+    echo "  curl -fsSL https://raw.githubusercontent.com/orange0730/nebula/main/scripts/install.sh -o install.sh" >&2
+    echo "  bash install.sh" >&2
+    exit 1
+fi
