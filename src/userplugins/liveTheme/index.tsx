@@ -61,7 +61,7 @@ export function applyBackground() {
     });
 
     if (mode === BackgroundMode.NONE) {
-        panelStyle.textContent = "";
+        if (panelStyle) panelStyle.textContent = "";
         stopAppBackgroundWatcher();
         return;
     }
@@ -73,18 +73,20 @@ export function applyBackground() {
         .map(token => `${token}: ${tint} !important;`)
         .join("\n            ");
 
-    panelStyle.textContent = `
-        :root {
-            ${tokenOverrides}
-        }
-        #app-mount nav {
-            background-color: ${tint} !important;
-            background-image: none !important;
-        }
-        #app-mount {
-            backdrop-filter: blur(${panelBlur}px) !important;
-        }
-    `;
+    if (panelStyle) {
+        panelStyle.textContent = `
+            :root {
+                ${tokenOverrides}
+            }
+            #app-mount nav {
+                background-color: ${tint} !important;
+                background-image: none !important;
+            }
+            #app-mount {
+                backdrop-filter: blur(${panelBlur}px) !important;
+            }
+        `;
+    }
 }
 
 export default definePlugin({
