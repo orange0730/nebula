@@ -1,0 +1,52 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.9.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm exec tsc --noEmit -p tsconfig.json
+
+      - name: Build
+        run: pnpm build
+        env:
+          VENCORD_REMOTE: orange0730/nebula
+
+      - name: Package dist
+        run: |
+          cd dist
+          zip -r ../nebula-dist.zip .
+
+      - name: Update rolling "latest" release
+        run: |
+          gh release delete latest --yes --cleanup-tag || true
+          git tag -f latest
+          git push -f origin latest
+          gh release create latest nebula-dist.zip \
+            --title "Nebula (latest build)" \
+            --notes "自動建置的最新版本，對應 main 分支目前的 commit：${{ github.sha }}。安裝方式見 README。" \
+            --prerelease
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

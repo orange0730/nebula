@@ -67,6 +67,28 @@ notification muting, snapping/tiling presets, multi-monitor window dragging.
 
 ## Quick start
 
+### Option 1: one-line install (recommended, no Node.js required)
+
+**Linux / macOS:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/orange0730/nebula/main/scripts/install.sh | bash
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/orange0730/nebula/main/scripts/install.ps1 | iex
+```
+
+> ⚠️ The Windows install script hasn't been tested on a real Windows machine yet. If something breaks,
+> please [open an issue](https://github.com/orange0730/nebula/issues) or send a PR fixing it.
+
+This downloads the latest build (produced automatically by GitHub Actions) plus Vencord's official installer,
+and injects Nebula into your local Discord install directly — no need to clone the repo or install Node.js/pnpm.
+
+### Option 2: build from source (for developers / if you want to modify the code)
+
 Requirements: [Node.js](https://nodejs.org) 22+, [pnpm](https://pnpm.io), and Discord desktop already installed.
 
 ```bash
@@ -84,8 +106,8 @@ pnpm build
 pnpm inject
 ```
 
-`pnpm inject` opens an interactive picker — select your detected Discord install (or enter a custom path),
-then **restart Discord**. After that:
+Either way, the installer opens an interactive picker — select your detected Discord install (or enter a
+custom path), then **restart Discord**. After that:
 
 1. Open Discord Settings → Vencord → Plugins, and enable both **LiveTheme** and **NebulaFreeMode**
 2. LiveTheme: click the gear icon next to the plugin to open its settings, pick a background mode, and adjust

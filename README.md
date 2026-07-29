@@ -63,6 +63,28 @@ Nebula 是 [orange0730](https://github.com/orange0730) 基於 [Vencord](https://
 
 ## 快速開始
 
+### 方法一:一行指令安裝(推薦,不需要裝 Node.js)
+
+**Linux / macOS:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/orange0730/nebula/main/scripts/install.sh | bash
+```
+
+**Windows(PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/orange0730/nebula/main/scripts/install.ps1 | iex
+```
+
+> ⚠️ Windows 版安裝腳本目前還沒有在真實 Windows 機器上實測過。如果安裝過程有問題,
+> 歡迎[開 Issue](https://github.com/orange0730/nebula/issues) 回報,或直接送 PR 修。
+
+這會下載 GitHub Actions 自動建置好的最新版本,加上 Vencord 官方的安裝器,直接幫你注入到本機
+Discord,不需要自己 clone repo、裝 Node.js/pnpm。
+
+### 方法二:從原始碼建置(開發者/想自己改程式碼)
+
 需求:[Node.js](https://nodejs.org) 22 以上、[pnpm](https://pnpm.io)、已安裝好的 Discord 桌面版。
 
 ```bash
@@ -80,7 +102,7 @@ pnpm build
 pnpm inject
 ```
 
-`pnpm inject` 執行後會跳出互動式選單,選擇偵測到的 Discord 安裝路徑(或手動輸入自訂路徑),
+不管用哪種方法,安裝器執行後會跳出互動式選單,選擇偵測到的 Discord 安裝路徑(或手動輸入自訂路徑),
 完成後**重新啟動 Discord**。啟動後:
 
 1. 打開 Discord 設定 → Vencord → Plugins,分別啟用 **LiveTheme** 和 **NebulaFreeMode**
