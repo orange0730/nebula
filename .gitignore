@@ -22,6 +22,7 @@ lerna-debug.log*
 src/userplugins/*
 !src/userplugins/liveTheme
 !src/userplugins/freeMode
+!src/userplugins/nebula
 
 ExtensionCache/
 /settings
