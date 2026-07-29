@@ -1,6 +1,6 @@
 # 貢獻指南
 
-Nebula 是 [orange0730](https://github.com/orange0730) 主導的個人專案(搭配 AI 協作開發),但歡迎任何人
+Nebula 是 [orange0730](https://github.com/orange0730) 主導的專案,但歡迎任何人
 提交 Issue 或 Pull Request。審查與回覆速度可能不像大型專案那麼快,請見諒。
 
 ## 開發環境設定
