@@ -193,6 +193,15 @@
     color: #fff;
 }
 
+.nebula-window-btn.nebula-pinned {
+    background: rgba(143, 123, 255, 0.55);
+    color: #fff;
+}
+
+.nebula-window-btn.nebula-pinned:hover {
+    background: rgba(143, 123, 255, 0.75);
+}
+
 .nebula-window-body {
     flex: 1;
     min-height: 0;

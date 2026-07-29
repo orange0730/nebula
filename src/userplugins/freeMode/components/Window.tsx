@@ -6,7 +6,7 @@ import { ClockWidget } from "../widgets/ClockWidget";
 import { WeatherWidget } from "../widgets/WeatherWidget";
 import { VoiceRoomWidget } from "../widgets/VoiceRoomWidget";
 import { ChannelChatView } from "./ChannelChatView";
-import { closeWindow, focusWindow, FreeWindow, toggleMinimize, updateWindowRect } from "../state";
+import { closeWindow, focusWindow, freeModeStore, FreeWindow, pinToOverlay, toggleMinimize, unpinFromOverlay, updateWindowRect, useExternalStore } from "../state";
 
 const cl = classNameFactory("nebula-");
 
@@ -20,6 +20,9 @@ interface Props {
 
 export function Window({ win, isFocused }: Props) {
     const ref = useRef<HTMLDivElement>(null);
+    const overlayItems = useExternalStore(freeModeStore).overlayItems;
+    const pinnable = win.kind === "channel" || win.kind === "voiceRoom";
+    const pinned = pinnable && overlayItems.some(i => i.id === win.id);
 
     const onDragStart = useCallback((e: React.PointerEvent) => {
         if (e.button !== 0) return;
@@ -93,6 +96,15 @@ export function Window({ win, isFocused }: Props) {
             <div className={cl("window-titlebar")} onPointerDown={onDragStart}>
                 <span className={cl("window-title")}>{win.title}</span>
                 <div className={cl("window-controls")}>
+                    {pinnable && (
+                        <button
+                            className={`${cl("window-btn")} ${pinned ? cl("pinned") : ""}`}
+                            onClick={() => pinned ? unpinFromOverlay(win.id) : pinToOverlay(win)}
+                            title={pinned ? "從遊戲內 Overlay 移除" : "加到遊戲內 Overlay"}
+                        >
+                            <PinIcon />
+                        </button>
+                    )}
                     <button className={cl("window-btn")} onClick={() => toggleMinimize(win.id)} title="最小化">
                         &minus;
                     </button>
@@ -126,4 +138,12 @@ function WindowBody({ win }: { win: FreeWindow; }) {
 
 function EmptyBody({ text }: { text: string; }) {
     return <div className={cl("empty-placeholder")}>{text}</div>;
+}
+
+function PinIcon() {
+    return (
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+            <path d="M14.15 2.15a1 1 0 0 1 1.41 0l6.29 6.29a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 0 1-1.41 0l-.24-.24-3.3 3.3.68 3.06a1 1 0 0 1-.27.94l-.71.71a1 1 0 0 1-1.41 0l-3.18-3.18-4.6 4.6a1 1 0 0 1-1.41-1.41l4.6-4.6-3.18-3.18a1 1 0 0 1 0-1.41l.71-.71a1 1 0 0 1 .94-.27l3.06.68 3.3-3.3-.24-.24a1 1 0 0 1 0-1.41Z" />
+        </svg>
+    );
 }

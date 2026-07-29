@@ -23,20 +23,45 @@
         backdrop-filter: blur(10px);
         border: 1px solid rgba(160, 120, 255, 0.35);
         box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
-        min-width: 180px;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
     }
 
-    #title {
-        font-size: 12px;
+    .section-header {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex-shrink: 0;
+    }
+
+    .section-title {
+        font-size: 10px;
         font-weight: 600;
         color: rgba(200, 170, 255, 0.9);
         letter-spacing: 0.04em;
         text-transform: uppercase;
     }
 
-    #empty {
+    .section-subtitle {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.55);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .empty {
         font-size: 13px;
         color: rgba(255, 255, 255, 0.5);
+    }
+
+    #voice-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        overflow-y: auto;
+        -webkit-app-region: no-drag;
     }
 
     .participant {
@@ -52,6 +77,7 @@
         object-fit: cover;
         box-sizing: border-box;
         border: 2px solid transparent;
+        flex-shrink: 0;
     }
 
     .participant.speaking .avatar {
@@ -61,29 +87,142 @@
     .name {
         font-size: 13px;
         color: rgba(255, 255, 255, 0.9);
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .status-icons {
+        display: flex;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    .status-icons svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .icon-off {
+        color: rgba(255, 255, 255, 0.35);
+    }
+
+    .icon-muted {
+        color: #f23f42;
+    }
+
+    #chat-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        overflow-y: auto;
+        -webkit-app-region: no-drag;
+    }
+
+    #voice-list::-webkit-scrollbar,
+    #chat-list::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    #voice-list::-webkit-scrollbar-thumb,
+    #chat-list::-webkit-scrollbar-thumb {
+        background: rgba(160, 120, 255, 0.4);
+        border-radius: 2px;
+    }
+
+    .chat-message {
+        display: flex;
+        gap: 6px;
+        align-items: flex-start;
+    }
+
+    .chat-avatar {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-top: 1px;
+        flex-shrink: 0;
+    }
+
+    .chat-body {
+        min-width: 0;
+    }
+
+    .chat-author {
+        font-size: 12px;
+        font-weight: 600;
+        color: rgba(200, 170, 255, 0.9);
+        margin-right: 4px;
+    }
+
+    .chat-content {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.85);
+        word-break: break-word;
+        white-space: pre-wrap;
     }
 </style>
 </head>
 <body>
 <div id="root">
-    <div id="title">Nebula · Voice Room</div>
-    <div id="list"></div>
+    <div id="voice-panel" class="section-header" style="display:none">
+        <div class="section-header">
+            <div class="section-title">Nebula · Voice Room</div>
+            <div id="voice-subtitle" class="section-subtitle"></div>
+        </div>
+        <div id="voice-list"></div>
+    </div>
+
+    <div id="chat-panel" class="section-header" style="display:none">
+        <div class="section-header">
+            <div class="section-title">Nebula · Chat</div>
+            <div id="chat-subtitle" class="section-subtitle"></div>
+        </div>
+        <div id="chat-list"></div>
+    </div>
 </div>
 <script>
-    const list = document.getElementById("list");
+    const voicePanel = document.getElementById("voice-panel");
+    const voiceList = document.getElementById("voice-list");
+    const voiceSubtitle = document.getElementById("voice-subtitle");
+
+    const chatPanel = document.getElementById("chat-panel");
+    const chatList = document.getElementById("chat-list");
+    const chatSubtitle = document.getElementById("chat-subtitle");
 
     window.__nebulaSetState = state => {
-        list.innerHTML = "";
+        if (!state) return;
 
-        if (!state || !state.participants || state.participants.length === 0) {
+        if (state.type === "chat") {
+            voicePanel.style.display = "none";
+            chatPanel.style.display = "flex";
+            renderChat(state);
+        } else {
+            chatPanel.style.display = "none";
+            voicePanel.style.display = "flex";
+            renderVoice(state);
+        }
+    };
+
+    function renderVoice(voice) {
+        voiceList.innerHTML = "";
+
+        voiceSubtitle.textContent = voice && voice.channelName
+            ? (voice.guildName ? `${voice.guildName} · ${voice.channelName}` : voice.channelName)
+            : "";
+        voiceSubtitle.style.display = voiceSubtitle.textContent ? "block" : "none";
+
+        if (!voice || !voice.participants || voice.participants.length === 0) {
             const empty = document.createElement("div");
-            empty.id = "empty";
-            empty.textContent = state && state.channelName ? "No one else here" : "Not in a voice channel";
-            list.appendChild(empty);
+            empty.className = "empty";
+            empty.textContent = voice && voice.channelName ? "No one else here" : "Not in a voice channel";
+            voiceList.appendChild(empty);
             return;
         }
 
-        for (const p of state.participants) {
+        for (const p of voice.participants) {
             const row = document.createElement("div");
             row.className = "participant" + (p.speaking ? " speaking" : "");
 
@@ -95,11 +234,73 @@
             name.className = "name";
             name.textContent = p.username;
 
+            const icons = document.createElement("div");
+            icons.className = "status-icons";
+            icons.innerHTML = micIcon(p.muted || p.deafened) + headsetIcon(p.deafened);
+
             row.appendChild(avatar);
             row.appendChild(name);
-            list.appendChild(row);
+            row.appendChild(icons);
+            voiceList.appendChild(row);
         }
-    };
+    }
+
+    function renderChat(chat) {
+        chatList.innerHTML = "";
+
+        chatSubtitle.textContent = chat && chat.channelName ? `# ${chat.channelName}` : "";
+        chatSubtitle.style.display = chatSubtitle.textContent ? "block" : "none";
+
+        if (!chat || !chat.messages || chat.messages.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = chat && chat.channelName ? "No messages yet" : "No channel selected";
+            chatList.appendChild(empty);
+            return;
+        }
+
+        for (const m of chat.messages) {
+            const row = document.createElement("div");
+            row.className = "chat-message";
+
+            const avatar = document.createElement("img");
+            avatar.className = "chat-avatar";
+            avatar.src = m.avatarUrl || "";
+
+            const body = document.createElement("div");
+            body.className = "chat-body";
+
+            const author = document.createElement("span");
+            author.className = "chat-author";
+            author.textContent = m.username;
+
+            const content = document.createElement("span");
+            content.className = "chat-content";
+            content.textContent = m.content;
+
+            body.appendChild(author);
+            body.appendChild(content);
+            row.appendChild(avatar);
+            row.appendChild(body);
+            chatList.appendChild(row);
+        }
+
+        chatList.scrollTop = chatList.scrollHeight;
+    }
+
+    function micIcon(muted) {
+        const cls = muted ? "icon-muted" : "icon-off";
+        return muted
+            ? `<svg class="${cls}" viewBox="0 0 24 24" fill="currentColor"><path d="M6.7 5.3a1 1 0 0 0-1.4 1.4l13 13a1 1 0 0 0 1.4-1.4l-2.9-2.9A6.98 6.98 0 0 0 19 11h-1.5a5.5 5.5 0 0 1-1.2 3.4l-1.1-1.1c.4-.7.6-1.5.6-2.3V6.5a3.5 3.5 0 0 0-6.4-1.9L6.7 5.3ZM12 15.5c-.4 0-.8 0-1.1-.1l1.6 1.6c1.9-.3 3.5-1.4 4.5-3l-1.1-1.1a5.48 5.48 0 0 1-3.9 2.6ZM8.5 6.5v2.9L11 12A3.5 3.5 0 0 1 8.5 6.5ZM11 18.9V21h2v-2.1a7 7 0 0 0 1-.2l-1.6-1.6c-.1 0-.3 0-.4 0s-.3 0-.4 0L10 19.7c.3.1.7.2 1 .3v-1.1Z"/></svg>`
+            : `<svg class="${cls}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-5a3.5 3.5 0 0 0-7 0v5A3.5 3.5 0 0 0 12 15Zm5.5-3.5A5.5 5.5 0 0 1 12 17a5.5 5.5 0 0 1-5.5-5.5H5a7 7 0 0 0 6 6.92V21h2v-2.58a7 7 0 0 0 6-6.92h-1.5Z"/></svg>`;
+    }
+
+    function headsetIcon(deafened) {
+        const cls = deafened ? "icon-muted" : "icon-off";
+        return deafened
+            ? `<svg class="${cls}" viewBox="0 0 24 24" fill="currentColor"><path d="M6.7 5.3a1 1 0 0 0-1.4 1.4l13 13a1 1 0 0 0 1.4-1.4l-13-13ZM12 4a8 8 0 0 0-8 8v4.5A2.5 2.5 0 0 0 6.5 19H7a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2h-.9A6.5 6.5 0 0 1 12 5.5c.7 0 1.4.1 2 .3l1.2 1.2A6.5 6.5 0 0 0 12 4Zm5.9 8H17a2 2 0 0 0-2 2v3c0 .3.1.6.2.8l3.1 3.1c.5-.4.7-1.1.7-1.9V12a8 8 0 0 0-.7-3.3l-1.4 1.4c.1.6.2 1.2.2 1.9Z"/></svg>`
+            : `<svg class="${cls}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4a8 8 0 0 0-8 8v4.5A2.5 2.5 0 0 0 6.5 19H7a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2h-1a6 6 0 0 1 12 0h-1a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h.5a2.5 2.5 0 0 0 2.5-2.5V12a8 8 0 0 0-8-8Z"/></svg>`;
+    }
 </script>
 </body>
 </html>

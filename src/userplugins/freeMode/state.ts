@@ -43,12 +43,22 @@ export interface FreeWindow {
     hasActivity: boolean;
 }
 
+export type OverlayItemKind = "channel" | "voiceRoom";
+
+export interface OverlayItem {
+    id: string;
+    kind: OverlayItemKind;
+    channelId?: string;
+    title: string;
+}
+
 export interface FreeModeState {
     isOpen: boolean;
     windows: FreeWindow[];
     focusedId: string | null;
     nextZIndex: number;
     idCounter: number;
+    overlayItems: OverlayItem[];
 }
 
 const INITIAL_STATE: FreeModeState = {
@@ -56,7 +66,8 @@ const INITIAL_STATE: FreeModeState = {
     windows: [],
     focusedId: null,
     nextZIndex: 1,
-    idCounter: 1
+    idCounter: 1,
+    overlayItems: []
 };
 
 export const freeModeStore = createExternalStore<FreeModeState>(INITIAL_STATE);
@@ -112,7 +123,26 @@ export function closeWindow(id: string) {
     freeModeStore.set(s => ({
         ...s,
         windows: s.windows.filter(w => w.id !== id),
-        focusedId: s.focusedId === id ? null : s.focusedId
+        focusedId: s.focusedId === id ? null : s.focusedId,
+        overlayItems: s.overlayItems.filter(i => i.id !== id)
+    }));
+}
+
+export function pinToOverlay(win: FreeWindow) {
+    if (win.kind !== "channel" && win.kind !== "voiceRoom") return;
+    const kind: OverlayItemKind = win.kind;
+
+    freeModeStore.set(s => {
+        if (s.overlayItems.some(i => i.id === win.id)) return s;
+        const item: OverlayItem = { id: win.id, kind, channelId: win.channelId, title: win.title };
+        return { ...s, overlayItems: [...s.overlayItems, item] };
+    });
+}
+
+export function unpinFromOverlay(id: string) {
+    freeModeStore.set(s => ({
+        ...s,
+        overlayItems: s.overlayItems.filter(i => i.id !== id)
     }));
 }
 
