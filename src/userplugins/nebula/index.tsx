@@ -12,6 +12,7 @@ export default definePlugin({
     description: "在設定側欄加入獨立的「Nebula」分頁，集中管理 LiveTheme 與 Free Mode 的常用外觀設定。",
     authors: [{ name: "orange980730", id: 0n }],
     tags: ["Appearance", "Utility"],
+    required: true,
 
     start() {
         SettingsPlugin.customEntries.push({

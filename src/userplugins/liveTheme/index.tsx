@@ -92,6 +92,7 @@ export default definePlugin({
     description: "動態/即時背景系統：支援圖片、影片、動態漸層，並提供面板透明度與模糊控制。",
     authors: [{ name: "orange980730", id: 0n }],
     tags: ["Appearance", "Customisation"],
+    required: true,
     settings,
 
     start() {

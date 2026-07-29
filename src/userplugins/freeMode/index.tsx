@@ -46,6 +46,7 @@ export default definePlugin({
     description: "自由模式：可自由拖放/縮放的多視窗聊天版面，支援多個頻道/私訊同時開啟，並可加入時鐘、天氣、語音室等小工具。",
     authors: [{ name: "orange980730", id: 0n }],
     tags: ["Appearance", "Utility"],
+    required: true,
     settings,
 
     start: mount,
