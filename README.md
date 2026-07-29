@@ -67,6 +67,8 @@ notification muting, snapping/tiling presets, multi-monitor window dragging.
 
 ### In-game overlay
 
+<img src="docs/images/ingame-overlay-concept.svg" alt="In-game overlay concept: a pinned Free Mode window promoted to a standalone chat and voice-room overlay floating over another window" width="100%">
+
 Pin any Free Mode window to a standalone, always-on-top overlay that floats above every other window on your
 screen — including fullscreen-borderless games, so you can keep an eye on chat or your voice room without
 alt-tabbing out.

@@ -63,6 +63,8 @@ Nebula 是 [orange0730](https://github.com/orange0730) 基於 [Vencord](https://
 
 ### 遊戲內 Overlay
 
+<img src="docs/images/ingame-overlay-concept.svg" alt="遊戲內 Overlay 示意圖:自由模式裡的視窗被疊加成獨立的聊天與語音室 overlay,浮在另一個視窗之上" width="100%">
+
 把自由模式裡的任何視窗「疊加」成一個獨立的、永遠置頂的浮動視窗,蓋在螢幕上所有其他視窗之上——
 包括無邊框全螢幕的遊戲——這樣打遊戲時也不用切出去就能看聊天或語音室狀況。
 
