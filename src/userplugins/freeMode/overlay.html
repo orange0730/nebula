@@ -176,6 +176,29 @@
         word-break: break-word;
         white-space: pre-wrap;
     }
+
+    #chat-input {
+        flex-shrink: 0;
+        -webkit-app-region: no-drag;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 7px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(160, 120, 255, 0.35);
+        background: rgba(0, 0, 0, 0.35);
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 12px;
+        font-family: inherit;
+        outline: none;
+    }
+
+    #chat-input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    #chat-input:focus {
+        border-color: rgba(160, 120, 255, 0.7);
+    }
 </style>
 </head>
 <body>
@@ -194,6 +217,7 @@
             <div id="chat-subtitle" class="section-subtitle"></div>
         </div>
         <div id="chat-list"></div>
+        <input id="chat-input" type="text" placeholder="輸入訊息，Enter 傳送" />
     </div>
 </div>
 <script>
@@ -204,6 +228,18 @@
     const chatPanel = document.getElementById("chat-panel");
     const chatList = document.getElementById("chat-list");
     const chatSubtitle = document.getElementById("chat-subtitle");
+    const chatInput = document.getElementById("chat-input");
+
+    chatInput.addEventListener("keydown", e => {
+        if (e.key !== "Enter" || e.shiftKey) return;
+        e.preventDefault();
+
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        console.log("NEBULA_SEND:" + JSON.stringify({ itemId: window.__nebulaItemId, text }));
+        chatInput.value = "";
+    });
 
     window.__nebulaSetState = state => {
         if (!state) return;

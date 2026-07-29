@@ -10,6 +10,7 @@ import {
     getVoiceStatesForChannel,
     GuildStore,
     MessageStore,
+    sendChannelMessage,
     UserStore,
     VoiceStateStore
 } from "./discordApi";
@@ -92,8 +93,17 @@ function syncAndPush() {
     }
 }
 
+function handleOverlaySend(itemId: string, text: string) {
+    const item = freeModeStore.get().overlayItems.find(i => i.id === itemId);
+    if (item?.kind === "channel" && item.channelId) {
+        sendChannelMessage(item.channelId, text);
+    }
+}
+
 export function startInGameOverlay() {
     Native.registerShortcut();
+
+    (window as any).__nebulaSendMessage = handleOverlaySend;
 
     pollTimer = setInterval(syncAndPush, 1000);
     unsubscribeStore = freeModeStore.subscribe(syncAndPush);
@@ -106,6 +116,8 @@ export function startInGameOverlay() {
 
 export function stopInGameOverlay() {
     Native.unregisterShortcut();
+
+    delete (window as any).__nebulaSendMessage;
 
     clearInterval(pollTimer);
     pollTimer = undefined;

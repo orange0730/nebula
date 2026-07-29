@@ -2,6 +2,7 @@ import { BrowserWindow, globalShortcut, IpcMainInvokeEvent } from "electron";
 import overlayHtml from "file://overlay.html?minify&base64";
 
 const SHORTCUT = "Control+Shift+`";
+const SEND_PREFIX = "NEBULA_SEND:";
 
 type OverlayKind = "channel" | "voiceRoom";
 
@@ -33,7 +34,15 @@ function positionWindow(win: BrowserWindow, item: OverlayItemMeta) {
     });
 }
 
-function createOverlayWindow() {
+function handleSend(itemId: string, text: string) {
+    const mainWin = getMainWindow();
+    if (!mainWin) return;
+    mainWin.webContents.executeJavaScript(
+        `window.__nebulaSendMessage && window.__nebulaSendMessage(${JSON.stringify(itemId)}, ${JSON.stringify(text)})`
+    ).catch(() => {});
+}
+
+function createOverlayWindow(itemId: string) {
     const win = new BrowserWindow({
         width: 280,
         height: 320,
@@ -42,7 +51,6 @@ function createOverlayWindow() {
         alwaysOnTop: true,
         skipTaskbar: true,
         resizable: false,
-        focusable: false,
         show: false,
         webPreferences: {
             contextIsolation: true,
@@ -53,6 +61,20 @@ function createOverlayWindow() {
 
     win.setAlwaysOnTop(true, "screen-saver");
     win.loadURL(`data:text/html;base64,${overlayHtml}`);
+
+    win.webContents.once("did-finish-load", () => {
+        win.webContents.executeJavaScript(`window.__nebulaItemId = ${JSON.stringify(itemId)}`).catch(() => {});
+    });
+
+    win.webContents.on("console-message", (_event, _level, message) => {
+        if (!message.startsWith(SEND_PREFIX)) return;
+        try {
+            const { itemId: fromItemId, text } = JSON.parse(message.slice(SEND_PREFIX.length));
+            handleSend(fromItemId, text);
+        } catch {
+            // ignore malformed bridge messages
+        }
+    });
 
     return win;
 }
@@ -70,10 +92,10 @@ export function syncOverlayItems(_event: IpcMainInvokeEvent, items: OverlayItemM
     for (const item of items) {
         let win = windows.get(item.id);
         if (!win || win.isDestroyed()) {
-            win = createOverlayWindow();
+            win = createOverlayWindow(item.id);
             windows.set(item.id, win);
             win.on("closed", () => windows.delete(item.id));
-            if (visible) win.showInactive();
+            if (visible) win.show();
         }
         positionWindow(win, item);
     }
@@ -82,7 +104,7 @@ export function syncOverlayItems(_event: IpcMainInvokeEvent, items: OverlayItemM
 function toggleOverlay() {
     visible = !visible;
     for (const win of windows.values()) {
-        if (visible) win.showInactive();
+        if (visible) win.show();
         else win.hide();
     }
 }
