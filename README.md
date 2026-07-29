@@ -1,74 +1,89 @@
 # Nebula
 
-This is [orange0730](https://github.com/orange0730)'s personal fork of Vencord, adding custom plugins:
-dynamic live backgrounds (**LiveTheme**) and a freeform floating-window multi-channel layer (**Free Mode**,
-in progress). See **[NEBULA.md](NEBULA.md)** for details on what's added here. Everything below this point
-is upstream Vencord's own documentation.
+Nebula 是 [orange0730](https://github.com/orange0730) 基於 [Vencord](https://github.com/Vendicated/Vencord)
+延伸開發的 Discord 客戶端修改工具。Vencord 提供底層的注入框架與外掛系統,Nebula 在其上加入了以下自製外掛:
 
----
+- **LiveTheme** — 動態/即時背景系統
+- **Free Mode(自由模式)** — 可自由拖放的多視窗聊天版面
 
-# Vencord
+## 功能
 
-![](https://img.shields.io/github/package-json/v/Vendicated/Vencord?style=for-the-badge&logo=github&logoColor=d3869b&label=&color=1d2021&labelColor=282828)
-[![Codeberg Mirror](https://img.shields.io/static/v1?style=for-the-badge&label=Codeberg%20Mirror&message=codeberg.org/Vee/cord&color=2185D0&logo=data:image/png;base64,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)](https://codeberg.org/Vee/cord)
+### LiveTheme:動態即時背景
 
-The cutest Discord client mod
+讓 Discord 的背景動起來,並讓聊天室/側欄面板變透明,透出背景:
 
-![](https://github.com/user-attachments/assets/3fac98c0-c411-4d2a-97a3-13b7da8687a2)
+- 背景模式:靜態圖片、循環播放影片、或動態 CSS 漸層(內建多種風格)
+- 面板不透明度與模糊程度可調整,即時預覽
+- 面板透明效果是透過 Discord 自身的 CSS 設計變數(如 `--chat-background`、`--panel-bg`)與
+  `<nav>` 等語意化標籤選取器套用,而不是猜測容易變動的雜湊 class 名稱,再搭配一個執行時的
+  DOM 掃描機制清除 App 根層(包含彈出視窗/設定畫面)的不透明背景。這個做法比傳統
+  BetterDiscord 主題常見的「猜 class name」寫法更能撐過 Discord 版本更新。
 
-## Features
+### Free Mode:自由模式
 
--   Easy to install
--   [100+ built in plugins](https://vencord.dev/plugins)
--   Fairly lightweight despite the many inbuilt plugins
--   Excellent Browser Support: Run Vencord in your Browser via extension or UserScript
--   Works on any Discord branch: Stable, Canary or PTB all work
--   Custom CSS and Themes: Inbuilt css editor with support to import any css files (including BetterDiscord themes)
--   Privacy friendly: blocks Discord analytics & crash reporting out of the box and has no telemetry
--   Maintained very actively, broken plugins are usually fixed within 12 hours
--   Settings sync: Keep your plugins and their settings synchronised between devices / apps (optional)
+畫面左上角有一個小按鈕(或按 `Ctrl+\``)可以切換進入「自由模式」——一個全螢幕的自由版面疊層,
+把 Discord 變成一個可以自由排列視窗的迷你桌面:
 
+- **視窗**:圓角玻璃感卡片,可拖動標題列移動、右下角拉伸縮放。每個視窗可以綁定一個頻道或私訊,
+  或是下面提到的小工具。最小化與關閉是分開的操作。
+- **鍵盤優先**:`Tab` / `Shift+Tab` 在視窗間切換焦點、`Ctrl+N` 開啟新增視窗選單、
+  `Ctrl+W` 關閉目前視窗、`Esc` 依序關閉選單再關閉整個自由模式。
+- **聊天視窗**是自己寫的輕量訊息渲染器,直接串接 Discord 內部的 `ChannelStore`
+  /`MessageStore`/`MessageActions`(不是重用 Discord 原生的聊天元件,因為那個元件只能顯示
+  單一頻道),並訂閱 Flux 的 `MESSAGE_CREATE`/`UPDATE`/`DELETE` 事件,讓多個同時開啟的視窗都
+  能透過 Discord 既有的連線即時更新,而不是各自额外輪詢。
+- **小工具**:語音室卡片(顯示目前通話成員,講話中的人頭像會亮綠框,串接
+  `VoiceStateStore`/`ChannelRTCStore`)、即時時鐘、天氣卡片(使用免費、不需金鑰的
+  [open-meteo](https://open-meteo.com) API)。
+- **版面**:可以把目前的視窗排列存成一個命名版面,之後一鍵載入,不用每次重新排一次。
 
-## Installing / Uninstalling
+視覺風格參考了 [ilyamiro/nixos-configuration](https://github.com/ilyamiro/nixos-configuration)
+這類 rice/compositor shell 的美學:暖色調深色背景、圓角膠囊型元件、單一強調色的柔光暈染。
 
-Visit https://vencord.dev/download
+尚未實作的已知項目:自由模式視窗開啟時抑制側欄未讀紅點、單一視窗通知靜音、視窗吸附/自動排列、
+多螢幕拖曳。
 
-## Join our Support/Community Server
+## 安裝與開發
 
-https://discord.gg/D9uwnFnqmd
+跟 Vencord 原本的開發流程一樣:
 
-## Sponsors
+```bash
+pnpm install
+pnpm build
+pnpm inject
+```
 
-|     **Thanks a lot to all Vencord [sponsors](https://github.com/sponsors/Vendicated)!!**     |
-| :------------------------------------------------------------------------------------------: |
-|   [![](https://meow.vendicated.dev/sponsors.png)](https://github.com/sponsors/Vendicated)    |
-| *generated using [github-sponsor-graph](https://github.com/Vendicated/github-sponsor-graph)* |
+其他細節(如何找到 Discord 安裝路徑、疑難排解等)請參考
+[Vencord 官方文件](https://github.com/Vendicated/Vencord)。
 
+## 授權與致謝
 
-## Star History
+本專案是 [Vencord](https://github.com/Vendicated/Vencord)(由 Vendicated 與其貢獻者開發)的衍生作品,
+沿用 Vencord 原本的 **GNU General Public License v3.0(GPL-3.0)**,完整條款見專案根目錄的
+[LICENSE](LICENSE)。
 
-<a href="https://star-history.com/#Vendicated/Vencord&Timeline">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Vendicated/Vencord&type=Timeline&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Vendicated/Vencord&type=Timeline" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Vendicated/Vencord&type=Timeline" />
-  </picture>
-</a>
+GPL-3.0 是一個 copyleft 授權,重點是:
 
-## Disclaimer
+- 可以自由修改、散布,包含公開在 GitHub 上,不需另外取得許可。
+- 衍生作品(也就是本專案)必須沿用同一份 GPL-3.0 授權,不能改成更嚴格或封閉的授權。
+- 必須保留原始著作權聲明——Vencord 原始碼各檔案中既有的著作權標頭(例如
+  `Copyright (c) 2022 Vendicated and contributors`)予以保留,不會被移除或竄改。
+- 必須提供原始碼(本 repo 本身就是公開原始碼,已符合)。
 
-Discord is trademark of Discord Inc. and solely mentioned for the sake of descriptivity.
-Mention of it does not imply any affiliation with or endorsement by Discord Inc.
+因此以 Vencord 為基礎延伸開發、公開這個 fork,在授權上是被允許且合規的,不構成侵權。這個 repo
+的 git commit 記錄只保留 `orange0730` 一個作者身份(沒有沿用 Vencord 原本數千筆的個別 commit
+紀錄),這只是 git 歷史記錄的呈現方式,不影響前述 GPL 合規性——原始碼檔案內既有的著作權標頭仍然
+完整保留,且本文件已清楚註明專案是基於 Vencord 延伸,滿足歸屬揭露的精神。
 
-<details>
-<summary>Using Vencord violates Discord's terms of service</summary>
+## Vencord 是什麼
 
-Client modifications are against Discord’s Terms of Service.
+> The cutest Discord client mod
+>
+> - 100+ 內建外掛、易於安裝、支援任何 Discord 版本(Stable/Canary/PTB)
+> - 支援瀏覽器擴充套件/UserScript 運作
+> - 內建 CSS/主題編輯器,可匯入 BetterDiscord 主題
+> - 注重隱私:預設封鎖 Discord 的分析與錯誤回報遙測,無自家遙測
+> - 積極維護,壞掉的外掛通常 12 小時內修好
 
-However, Discord is pretty indifferent about them and there are no known cases of users getting banned for using client mods! So you should generally be fine as long as you don’t use any plugins that implement abusive behaviour. But no worries, all inbuilt plugins are safe to use!
-
-Regardless, if your account is very important to you and it getting disabled would be a disaster for you, you should probably not use any client mods (not exclusive to Vencord), just to be safe
-
-Additionally, make sure not to post screenshots with Vencord in a server where you might get banned for it
-
-</details>
+更多資訊請見 [vencord.dev](https://vencord.dev) 或原始專案
+[github.com/Vendicated/Vencord](https://github.com/Vendicated/Vencord)。
