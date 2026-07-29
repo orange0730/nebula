@@ -18,16 +18,16 @@
   <circle cx="400" cy="200" r="260" fill="url(#glow3)"/>
 
   <!-- toolbar pill -->
-  <rect x="300" y="18" width="200" height="34" rx="17" fill="#12101f" fill-opacity="0.9" stroke="#ffffff" stroke-opacity="0.08"/>
-  <circle cx="322" cy="35" r="4" fill="#8f7bff"/>
-  <text x="336" y="39" font-family="sans-serif" font-size="12" fill="#d9d4ff">自由模式</text>
-  <text x="430" y="39" font-family="sans-serif" font-size="10" fill="#8f88b8">Tab 切換視窗</text>
+  <rect x="255" y="18" width="290" height="34" rx="17" fill="#12101f" fill-opacity="0.9" stroke="#ffffff" stroke-opacity="0.08"/>
+  <circle cx="277" cy="35" r="4" fill="#8f7bff"/>
+  <text x="291" y="39" font-family="sans-serif" font-size="12" fill="#d9d4ff">Free Mode</text>
+  <text x="380" y="39" font-family="sans-serif" font-size="10" fill="#8f88b8">Tab to switch windows</text>
 
   <!-- window 1: chat -->
   <g filter="url(#soft)">
     <rect x="70" y="90" width="270" height="240" rx="16" fill="#12101f" fill-opacity="0.85" stroke="#8f7bff" stroke-opacity="0.35"/>
     <rect x="70" y="90" width="270" height="30" rx="16" fill="#ffffff" fill-opacity="0.04"/>
-    <text x="86" y="110" font-family="sans-serif" font-size="12" fill="#e4e0ff"># 頻道聊天</text>
+    <text x="86" y="110" font-family="sans-serif" font-size="12" fill="#e4e0ff"># general</text>
     <g fill="#ffffff" fill-opacity="0.18">
       <circle cx="92" cy="150" r="10"/>
       <rect x="110" y="145" width="120" height="8" rx="4"/>
@@ -44,7 +44,7 @@
   <g filter="url(#soft)">
     <rect x="360" y="70" width="220" height="150" rx="16" fill="#12101f" fill-opacity="0.9" stroke="#8f7bff" stroke-opacity="0.35"/>
     <rect x="360" y="70" width="220" height="28" rx="16" fill="#ffffff" fill-opacity="0.04"/>
-    <text x="376" y="89" font-family="sans-serif" font-size="12" fill="#e4e0ff">語音室</text>
+    <text x="376" y="89" font-family="sans-serif" font-size="12" fill="#e4e0ff">Voice Room</text>
     <circle cx="400" cy="150" r="18" fill="none" stroke="#3ba55d" stroke-width="3"/>
     <circle cx="400" cy="150" r="12" fill="#ffffff" fill-opacity="0.25"/>
     <circle cx="460" cy="150" r="18" fill="none" stroke="#ffffff" stroke-opacity="0.15" stroke-width="3"/>
@@ -57,7 +57,7 @@
   <g filter="url(#soft)">
     <rect x="430" y="250" width="200" height="140" rx="16" fill="#12101f" fill-opacity="0.9" stroke="#8f7bff" stroke-opacity="0.35"/>
     <rect x="430" y="250" width="200" height="28" rx="16" fill="#ffffff" fill-opacity="0.04"/>
-    <text x="446" y="269" font-family="sans-serif" font-size="12" fill="#e4e0ff">時鐘</text>
+    <text x="446" y="269" font-family="sans-serif" font-size="12" fill="#e4e0ff">Clock</text>
     <text x="530" y="335" font-family="monospace" font-size="30" font-weight="bold" fill="#f1eeff" text-anchor="middle">21:15</text>
   </g>
 
@@ -65,11 +65,11 @@
   <g filter="url(#soft)" opacity="0.85">
     <rect x="620" y="200" width="150" height="120" rx="16" fill="#12101f" fill-opacity="0.85" stroke="#8f7bff" stroke-opacity="0.3"/>
     <rect x="620" y="200" width="150" height="26" rx="16" fill="#ffffff" fill-opacity="0.04"/>
-    <text x="634" y="217" font-family="sans-serif" font-size="11" fill="#e4e0ff">天氣</text>
+    <text x="634" y="217" font-family="sans-serif" font-size="11" fill="#e4e0ff">Weather</text>
     <text x="695" y="275" font-family="sans-serif" font-size="24" font-weight="bold" fill="#f1eeff" text-anchor="middle">27°</text>
   </g>
 
   <text x="400" y="460" font-family="sans-serif" font-size="15" fill="#e6e1ff" fill-opacity="0.55" text-anchor="middle">
-    Free Mode 示意圖 — 多個頻道與小工具同時懸浮排列
+    Free Mode concept — multiple channels and widgets floating side by side
   </text>
 </svg>
