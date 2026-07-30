@@ -170,7 +170,9 @@ function ensureLauncher() {
         alwaysOnTop: true,
         skipTaskbar: true,
         resizable: false,
-        focusable: false,
+        // focusable:false blocks real mouse clicks too on some Wayland compositors,
+        // not just keyboard input (same issue the chat overlay hit earlier) - so this
+        // has to be focusable for the ball to be clickable at all.
         show: false,
         webPreferences: {
             contextIsolation: true,
