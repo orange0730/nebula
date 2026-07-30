@@ -8,7 +8,8 @@ const SHORTCUT = "Control+Shift+`";
 const SEND_PREFIX = "NEBULA_SEND:";
 const LAUNCHER_PREFIX = "NEBULA_LAUNCHER:";
 
-const LAUNCHER_SIZE = { width: 292, height: 428 };
+const LAUNCHER_COLLAPSED = { width: 64, height: 64 };
+const LAUNCHER_EXPANDED = { width: 292, height: 428 };
 
 type OverlayKind = "channel" | "voiceRoom";
 
@@ -30,6 +31,7 @@ let visible = false;
 
 let launcherWindow: BrowserWindow | null = null;
 let launcherPos: { x: number; y: number; } | null = null;
+let launcherExpanded = false;
 
 function getMainWindow(): BrowserWindow | undefined {
     const ours = new Set<BrowserWindow>(windows.values());
@@ -117,13 +119,31 @@ function defaultLauncherPos() {
     return { x: work.x + 32, y: work.y + 32 };
 }
 
+function applyLauncherBounds() {
+    if (!launcherWindow || launcherWindow.isDestroyed()) return;
+
+    const size = launcherExpanded ? LAUNCHER_EXPANDED : LAUNCHER_COLLAPSED;
+    const work = screen.getPrimaryDisplay().workArea;
+    const pos = launcherPos ?? defaultLauncherPos();
+
+    launcherWindow.setBounds({
+        x: Math.min(Math.max(pos.x, work.x), work.x + work.width - size.width),
+        y: Math.min(Math.max(pos.y, work.y), work.y + work.height - size.height),
+        width: size.width,
+        height: size.height
+    });
+}
+
 function handleLauncherAction(payload: any) {
     switch (payload?.action) {
-        case "hover":
-            // click-through by default; only capture the mouse while it's actually
-            // over the ball/panel so the rest of the (mostly transparent) window
-            // doesn't block clicks on the game underneath.
-            launcherWindow?.setIgnoreMouseEvents(!payload.inside, { forward: true });
+        case "expand":
+        case "collapse":
+            // click-through/mouse-forwarding tricks for a "hover to become
+            // interactive" window are unreliable on Linux/Wayland - instead the
+            // window itself is only as big as what's actually drawn (a 64x64 ball
+            // when idle), so it never blocks clicks on the game beyond that.
+            launcherExpanded = payload.action === "expand";
+            applyLauncherBounds();
             break;
         case "togglePin": {
             const mainWin = getMainWindow();
@@ -139,9 +159,10 @@ function ensureLauncher() {
     if (launcherWindow && !launcherWindow.isDestroyed()) return launcherWindow;
 
     launcherPos ??= defaultLauncherPos();
+    launcherExpanded = false;
 
     const win = new BrowserWindow({
-        ...LAUNCHER_SIZE,
+        ...LAUNCHER_COLLAPSED,
         x: launcherPos.x,
         y: launcherPos.y,
         frame: false,
@@ -159,7 +180,6 @@ function ensureLauncher() {
     });
 
     win.setAlwaysOnTop(true, "screen-saver");
-    win.setIgnoreMouseEvents(true, { forward: true });
     win.loadURL(`data:text/html;base64,${launcherHtml}`);
 
     win.webContents.on("console-message", (...args: any[]) => {
@@ -230,13 +250,15 @@ function toggleOverlay() {
     if (!launcher || launcher.isDestroyed()) return;
 
     if (visible) {
-        launcher.setBounds({ ...launcherPos!, ...LAUNCHER_SIZE });
+        applyLauncherBounds();
         launcher.showInactive();
         // don't wait for the next poll tick - the panel would sit blank for up to 1s
         getMainWindow()?.webContents.executeJavaScript(
             "window.__nebulaForceOverlaySync && window.__nebulaForceOverlaySync()"
         ).catch(() => {});
     } else {
+        launcherExpanded = false;
+        applyLauncherBounds();
         launcher.hide();
     }
 }
@@ -270,6 +292,7 @@ export async function unregisterShortcut(_event: IpcMainInvokeEvent) {
 
     launcherWindow?.close();
     launcherWindow = null;
+    launcherExpanded = false;
 }
 
 export function pushState(_event: IpcMainInvokeEvent, itemId: string, state: unknown) {

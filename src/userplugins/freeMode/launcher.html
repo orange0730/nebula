@@ -195,15 +195,13 @@
         console.log("NEBULA_LAUNCHER:" + JSON.stringify(payload));
     }
 
-    // the launcher window is click-through by default (main process ignores mouse
-    // events except when forwarded); tell it when the cursor is over something so
-    // clicks land here instead of passing through to the game underneath.
-    for (const el of [ball, panel]) {
-        el.addEventListener("mouseenter", () => bridge({ action: "hover", inside: true }));
-        el.addEventListener("mouseleave", () => bridge({ action: "hover", inside: false }));
-    }
-
-    ball.addEventListener("click", () => panel.classList.toggle("open"));
+    // the whole launcher window resizes between a 64x64 "collapsed" and a
+    // 292x428 "expanded" size (see native.ts) so it never blocks clicks on the
+    // game beyond exactly what's drawn.
+    ball.addEventListener("click", () => {
+        const open = panel.classList.toggle("open");
+        bridge({ action: open ? "expand" : "collapse" });
+    });
 
     /* --- state pushed from the Discord renderer --- */
     window.__nebulaSetLauncherState = state => {
