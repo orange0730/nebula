@@ -1,6 +1,6 @@
 import { classNameFactory } from "@utils/css";
 import type { PointerEvent as ReactPointerEvent } from "react";
-import { showToast, Toasts, useCallback, useRef, useState } from "@webpack/common";
+import { showToast, Toasts, useCallback, useState } from "@webpack/common";
 
 import { ClockWidget } from "../widgets/ClockWidget";
 import { WeatherWidget } from "../widgets/WeatherWidget";
@@ -25,11 +25,15 @@ interface Props {
 const CLOSE_ANIM_MS = 140;
 
 export function Window({ win, isFocused }: Props) {
-    const ref = useRef<HTMLDivElement>(null);
     const overlayItems = useExternalStore(freeModeStore).overlayItems;
     const pinnable = win.kind === "channel" || win.kind === "voiceRoom";
     const pinned = pinnable && overlayItems.some(i => i.id === win.id);
     const [closing, setClosing] = useState(false);
+    // The single source of truth for position/size while actively dragging or
+    // resizing. Without this, directly mutating el.style bypasses React, and any
+    // unrelated store update mid-drag (a new message, another window focusing)
+    // re-renders this element from the still-stale win.x/win.y and snaps it back.
+    const [liveRect, setLiveRect] = useState<Partial<Pick<FreeWindow, "x" | "y" | "width" | "height">> | null>(null);
 
     const requestClose = useCallback(() => {
         setClosing(true);
@@ -45,18 +49,14 @@ export function Window({ win, isFocused }: Props) {
         const startY = e.clientY;
         const origX = win.x;
         const origY = win.y;
-        const el = ref.current;
 
         const onMove = (ev: PointerEvent) => {
-            if (!el) return;
-            const nx = origX + (ev.clientX - startX);
-            const ny = origY + (ev.clientY - startY);
-            el.style.left = `${nx}px`;
-            el.style.top = `${ny}px`;
+            setLiveRect({ x: origX + (ev.clientX - startX), y: origY + (ev.clientY - startY) });
         };
         const onUp = (ev: PointerEvent) => {
             document.removeEventListener("pointermove", onMove);
             document.removeEventListener("pointerup", onUp);
+            setLiveRect(null);
             updateWindowRect(win.id, {
                 x: origX + (ev.clientX - startX),
                 y: origY + (ev.clientY - startY)
@@ -75,21 +75,20 @@ export function Window({ win, isFocused }: Props) {
         const startY = e.clientY;
         const origW = win.width;
         const origH = win.height;
-        const el = ref.current;
 
         const clampWidth = (w: number) => Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, w));
         const clampHeight = (h: number) => Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, h));
 
         const onMove = (ev: PointerEvent) => {
-            if (!el) return;
-            const nw = clampWidth(origW + (ev.clientX - startX));
-            const nh = clampHeight(origH + (ev.clientY - startY));
-            el.style.width = `${nw}px`;
-            el.style.height = `${nh}px`;
+            setLiveRect({
+                width: clampWidth(origW + (ev.clientX - startX)),
+                height: clampHeight(origH + (ev.clientY - startY))
+            });
         };
         const onUp = (ev: PointerEvent) => {
             document.removeEventListener("pointermove", onMove);
             document.removeEventListener("pointerup", onUp);
+            setLiveRect(null);
             updateWindowRect(win.id, {
                 width: clampWidth(origW + (ev.clientX - startX)),
                 height: clampHeight(origH + (ev.clientY - startY))
@@ -103,9 +102,14 @@ export function Window({ win, isFocused }: Props) {
 
     return (
         <div
-            ref={ref}
             className={`${cl("window")} ${isFocused ? cl("focused") : ""} ${win.hasActivity ? cl("activity") : ""} ${closing ? cl("closing") : ""}`}
-            style={{ left: win.x, top: win.y, width: win.width, height: win.height, zIndex: win.zIndex }}
+            style={{
+                left: liveRect?.x ?? win.x,
+                top: liveRect?.y ?? win.y,
+                width: liveRect?.width ?? win.width,
+                height: liveRect?.height ?? win.height,
+                zIndex: win.zIndex
+            }}
             onPointerDownCapture={() => focusWindow(win.id)}
         >
             <div className={cl("window-titlebar")} onPointerDown={onDragStart}>
