@@ -136,6 +136,15 @@ function applyLauncherBounds() {
 
 function handleLauncherAction(payload: any) {
     switch (payload?.action) {
+        case "dragMove": {
+            if (!launcherWindow || launcherWindow.isDestroyed()) break;
+            const { x, y, width, height } = launcherWindow.getBounds();
+            const nextX = Math.round(x + (payload.dx ?? 0));
+            const nextY = Math.round(y + (payload.dy ?? 0));
+            launcherWindow.setBounds({ x: nextX, y: nextY, width, height });
+            launcherPos = { x: nextX, y: nextY };
+            break;
+        }
         case "expand":
         case "collapse":
             // click-through/mouse-forwarding tricks for a "hover to become
@@ -253,7 +262,11 @@ function toggleOverlay() {
 
     if (visible) {
         applyLauncherBounds();
-        launcher.showInactive();
+        // showInactive() appears to leave the window unable to receive real pointer
+        // input at all on this GNOME/Wayland setup (confirmed: clicks never reached
+        // the renderer, while a CDP-injected click into the same page worked fine) -
+        // matches how the chat/voice overlay windows already show() themselves above.
+        launcher.show();
         // don't wait for the next poll tick - the panel would sit blank for up to 1s
         getMainWindow()?.webContents.executeJavaScript(
             "window.__nebulaForceOverlaySync && window.__nebulaForceOverlaySync()"

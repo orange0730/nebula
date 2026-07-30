@@ -24,7 +24,6 @@
         align-items: center;
         justify-content: center;
         cursor: grab;
-        -webkit-app-region: drag;
         background: radial-gradient(circle at 32% 28%, #a892ff, #6b4fd8 62%, #3d2a8f);
         border: 1px solid rgba(200, 170, 255, 0.55);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 18px rgba(143, 123, 255, 0.35);
@@ -195,13 +194,47 @@
         console.log("NEBULA_LAUNCHER:" + JSON.stringify(payload));
     }
 
-    // the whole launcher window resizes between a 64x64 "collapsed" and a
-    // 292x428 "expanded" size (see native.ts) so it never blocks clicks on the
-    // game beyond exactly what's drawn.
-    ball.addEventListener("click", () => {
-        const open = panel.classList.toggle("open");
-        bridge({ action: open ? "expand" : "collapse" });
+    // Manual drag (not -webkit-app-region: drag): that CSS property hands the
+    // mousedown straight to the OS window-move protocol and never dispatches a
+    // real click to the page, which is why dragging worked but clicking never did.
+    let dragging = false;
+    let moved = false;
+    let lastX = 0, lastY = 0;
+
+    ball.addEventListener("pointerdown", e => {
+        if (e.button !== 0) return;
+        dragging = true;
+        moved = false;
+        lastX = e.screenX;
+        lastY = e.screenY;
+        ball.setPointerCapture(e.pointerId);
     });
+
+    ball.addEventListener("pointermove", e => {
+        if (!dragging) return;
+        const dx = e.screenX - lastX;
+        const dy = e.screenY - lastY;
+        if (Math.abs(dx) + Math.abs(dy) > 0) {
+            if (!moved && Math.hypot(e.screenX - lastX, e.screenY - lastY) > 3) moved = true;
+            if (moved) bridge({ action: "dragMove", dx, dy });
+            lastX = e.screenX;
+            lastY = e.screenY;
+        }
+    });
+
+    function endDrag(e) {
+        if (!dragging) return;
+        dragging = false;
+        ball.releasePointerCapture(e.pointerId);
+        if (!moved) {
+            const open = panel.classList.toggle("open");
+            bridge({ action: open ? "expand" : "collapse" });
+        }
+    }
+
+    ball.addEventListener("pointerup", endDrag);
+    ball.addEventListener("pointercancel", endDrag);
+    ball.addEventListener("lostpointercapture", endDrag);
 
     /* --- state pushed from the Discord renderer --- */
     window.__nebulaSetLauncherState = state => {

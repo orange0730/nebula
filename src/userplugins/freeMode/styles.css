@@ -60,6 +60,25 @@
     -webkit-app-region: no-drag;
 }
 
+@keyframes nebula-overlay-fade-in {
+    from { opacity: 0; backdrop-filter: blur(0); }
+    to { opacity: 1; backdrop-filter: blur(6px); }
+}
+
+@keyframes nebula-overlay-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.nebula-overlay-opening {
+    animation: nebula-overlay-fade-in 0.18s ease both;
+}
+
+.nebula-overlay-closing {
+    animation: nebula-overlay-fade-out 0.16s ease both;
+}
+
+
 .nebula-overlay-toolbar {
     position: absolute;
     top: 14px;
@@ -117,6 +136,16 @@
     color: #fff;
 }
 
+@keyframes nebula-window-in {
+    from { opacity: 0; transform: scale(0.92) translateY(6px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes nebula-window-out {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.94); }
+}
+
 .nebula-window {
     position: absolute;
     display: flex;
@@ -127,8 +156,14 @@
     backdrop-filter: blur(var(--nebula-blur-window));
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
     overflow: hidden;
-    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    animation: nebula-window-in 0.18s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease, opacity 0.14s ease, transform 0.14s ease;
     color: #ece9ff;
+}
+
+.nebula-window.nebula-closing {
+    animation: nebula-window-out 0.14s ease both;
+    pointer-events: none;
 }
 
 .nebula-window.nebula-focused {

@@ -8,10 +8,25 @@ import { WorkspaceMenu } from "./WorkspaceMenu";
 
 const cl = classNameFactory("nebula-overlay-");
 
+const CLOSE_ANIM_MS = 160;
+
 export function FreeModeOverlay() {
     const state = useExternalStore(freeModeStore);
     const [pickerOpen, setPickerOpen] = useState(false);
     const [wsMenuOpen, setWsMenuOpen] = useState(false);
+    const [rendered, setRendered] = useState(state.isOpen);
+    const [closing, setClosing] = useState(false);
+
+    useEffect(() => {
+        if (state.isOpen) {
+            setClosing(false);
+            setRendered(true);
+        } else if (rendered) {
+            setClosing(true);
+            const t = setTimeout(() => { setRendered(false); setClosing(false); }, CLOSE_ANIM_MS);
+            return () => clearTimeout(t);
+        }
+    }, [state.isOpen]);
 
     useEffect(() => {
         if (!state.isOpen) return;
@@ -42,10 +57,13 @@ export function FreeModeOverlay() {
         return () => document.removeEventListener("keydown", onKeyDown, true);
     }, [state.isOpen, pickerOpen, wsMenuOpen]);
 
-    if (!state.isOpen) return null;
+    if (!rendered) return null;
 
     return (
-        <div className="nebula-overlay" onPointerDown={() => { setPickerOpen(false); setWsMenuOpen(false); }}>
+        <div
+            className={`nebula-overlay ${closing ? "nebula-overlay-closing" : "nebula-overlay-opening"}`}
+            onPointerDown={() => { setPickerOpen(false); setWsMenuOpen(false); }}
+        >
             <div className={cl("toolbar")}>
                 <button
                     className="nebula-toolbar-btn"

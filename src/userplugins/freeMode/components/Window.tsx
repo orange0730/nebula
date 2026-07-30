@@ -1,6 +1,6 @@
 import { classNameFactory } from "@utils/css";
 import type { PointerEvent as ReactPointerEvent } from "react";
-import { showToast, Toasts, useCallback, useRef } from "@webpack/common";
+import { showToast, Toasts, useCallback, useRef, useState } from "@webpack/common";
 
 import { ClockWidget } from "../widgets/ClockWidget";
 import { WeatherWidget } from "../widgets/WeatherWidget";
@@ -22,11 +22,19 @@ interface Props {
     isFocused: boolean;
 }
 
+const CLOSE_ANIM_MS = 140;
+
 export function Window({ win, isFocused }: Props) {
     const ref = useRef<HTMLDivElement>(null);
     const overlayItems = useExternalStore(freeModeStore).overlayItems;
     const pinnable = win.kind === "channel" || win.kind === "voiceRoom";
     const pinned = pinnable && overlayItems.some(i => i.id === win.id);
+    const [closing, setClosing] = useState(false);
+
+    const requestClose = useCallback(() => {
+        setClosing(true);
+        setTimeout(() => closeWindow(win.id), CLOSE_ANIM_MS);
+    }, [win.id]);
 
     const onDragStart = useCallback((e: React.PointerEvent) => {
         if (e.button !== 0) return;
@@ -96,7 +104,7 @@ export function Window({ win, isFocused }: Props) {
     return (
         <div
             ref={ref}
-            className={`${cl("window")} ${isFocused ? cl("focused") : ""} ${win.hasActivity ? cl("activity") : ""}`}
+            className={`${cl("window")} ${isFocused ? cl("focused") : ""} ${win.hasActivity ? cl("activity") : ""} ${closing ? cl("closing") : ""}`}
             style={{ left: win.x, top: win.y, width: win.width, height: win.height, zIndex: win.zIndex }}
             onPointerDownCapture={() => focusWindow(win.id)}
         >
@@ -127,7 +135,7 @@ export function Window({ win, isFocused }: Props) {
                     <button className={cl("window-btn")} onClick={() => toggleMinimize(win.id)} title="最小化">
                         &minus;
                     </button>
-                    <button className={`${cl("window-btn")} ${cl("close")}`} onClick={() => closeWindow(win.id)} title="關閉">
+                    <button className={`${cl("window-btn")} ${cl("close")}`} onClick={requestClose} title="關閉">
                         &times;
                     </button>
                 </div>

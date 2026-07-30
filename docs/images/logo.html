@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 512px;
+        height: 512px;
+        background: transparent;
+    }
+    #bg {
+        width: 512px;
+        height: 512px;
+        border-radius: 96px;
+        background: radial-gradient(circle at 32% 26%, #241a4a 0%, #120c26 55%, #0a0716 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    svg {
+        width: 320px;
+        height: 320px;
+        filter: drop-shadow(0 0 40px rgba(143, 123, 255, 0.55));
+    }
+</style>
+</head>
+<body>
+<div id="bg">
+    <svg viewBox="0 0 24 24" fill="none">
+        <defs>
+            <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#c8aaff"/>
+                <stop offset="100%" stop-color="#8f7bff"/>
+            </linearGradient>
+        </defs>
+        <path d="M12 1 L14.2 9.8 L23 12 L14.2 14.2 L12 23 L9.8 14.2 L1 12 L9.8 9.8 Z" fill="url(#g)"/>
+        <circle cx="19" cy="5" r="1.6" fill="#c8aaff" opacity="0.85"/>
+    </svg>
+</div>
+</body>
+</html>
